@@ -27,6 +27,7 @@
     "Jerry Medina"
   ],
   "dependencies" : {
+    "browserify": "1.16.x",
     "coffee-script" : "1.3.x",
     "connect" : "2.6.x",
     "socket.io" : "0.9.x"

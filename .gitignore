@@ -4,12 +4,14 @@ lib-cov
 *.csv
 *.dat
 *.out
+*.jsc
 *.pid
 *.gz
 
 pids
 logs
 results
+public
 
 node_modules
 npm-debug.log
