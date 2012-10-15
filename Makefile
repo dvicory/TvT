@@ -4,21 +4,27 @@ BROWSERIFYC=browserify
 COMMON_LIB = 
 
 SERVER_LIB = \
-	lib/server/application.jsc
+	lib/server/application.js
 
 CLIENT_LIB = \
-	lib/client/application.jsc
+	lib/client/application.js
 
-all: $(COMMON_LIB) lib/client/public/js/game.jsc $(SERVER_LIB)
+all: common server client
 
-%.jsc:: %.coffee
+common: $(COMMON_LIB)
+
+server: common $(SERVER_LIB)
+
+client: common $(CLIENT_LIB) lib/client/public/js/game.js
+
+%.js:: %.coffee
 	$(COFFEEC) $< >$@
 
-lib/client/public/js/game.jsc: $(CLIENT_LIB) $(COMMON_LIB)
-	$(BROWSERIFYC) lib/client/application.jsc -o $@
+lib/client/public/js/game.js: $(COMMON_LIB) $(CLIENT_LIB)
+	$(BROWSERIFYC) lib/client/application.js -o $@
 
 clean:
-	rm -f $(COMMON_LIB) $(SERVER_LIB) $(CLIENT_LIB)
+	rm -f $(COMMON_LIB) $(SERVER_LIB) $(CLIENT_LIB) lib/client/public/js/game.js
 
 install: all
 	cp -pr lib/client/public .
@@ -26,4 +32,4 @@ install: all
 uninstall:
 	rm -rf public
 
-.PHONY: all clean install uninstall
+.PHONY: all common server client clean install uninstall
