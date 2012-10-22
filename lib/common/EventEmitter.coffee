@@ -111,7 +111,7 @@ class EventEmitter extends EventEmitter2
       return 'touchclick'
 
     for t in pulse.eventtranslations
-      return t if type is pulse.eventtranslations[t] and pulse.util.eventSupported(t) for t in pulse.eventtranslations
+      return t if type is pulse.eventtranslations[t] and pulse.util.eventSupported(t)
 
     type
 
