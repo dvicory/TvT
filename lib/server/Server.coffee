@@ -1,3 +1,5 @@
+'use strict'
+
 http = require('http')
 
 handler = (req, res) ->

@@ -11,7 +11,7 @@ lib-cov
 pids
 logs
 results
-public
+build
 
 node_modules
 npm-debug.log
