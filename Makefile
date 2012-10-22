@@ -1,7 +1,8 @@
 COFFEEC=coffee -cp
 BROWSERIFYC=browserify
 
-COMMON_LIB = 
+COMMON_LIB = \
+	lib/common/EventEmitter.js
 
 SERVER_LIB = \
 	lib/server/Server.js

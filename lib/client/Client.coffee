@@ -1,3 +1,7 @@
+EventEmitter = require('../common/EventEmitter')
+
+pulse.EventManager = EventEmitter
+
 class Ball extends pulse.Sprite
   constructor: (args) ->
     args = {} unless args?
@@ -60,8 +64,8 @@ pulse.ready ->
     y: 100
   layer.addNode ball
    
-  # add 5 balls
-  for i in [0..5]
+  # add 200 balls
+  for i in [0..200]
     ball = new Ball
     ball.position =
       x: 100
