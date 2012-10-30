@@ -8,6 +8,7 @@ SERVER_LIB = \
 	lib/server/Server.js
 
 CLIENT_LIB = \
+	lib/client/Player.js \
 	lib/client/Client.js
 
 all: common server client
