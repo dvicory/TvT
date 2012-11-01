@@ -1,6 +1,44 @@
 Sprite = require('./Sprite')
+Player = require('./Player')
 
 class World extends Sprite
+  constructor: (args) ->
+    args ?= {}
+    args.src = 'img/textures/grass.png';
+    
+    super args
+
+  update: (elapsedMS) ->
+    # make worldLayer, which includes world elements
+    # the layer world is in is a special layer
+    if @parent? and !@worldLayer?
+      @worldLayer = new pulse.Layer
+      @worldLayer.anchor =
+        x: 0
+        y: 0
+
+      @parent.parent.addLayer @worldLayer
+
+      # spawn the local player
+      @localPlayer = new Player
+      @worldLayer.addNode @localPlayer
+
+    # for later...
+    if @localPlayer?
+      @position = @localPlayer.position
+      @rotation = @localPlayer.rotation
+
+    super elapsedMS
+
+  draw: (ctx) ->
+    if !@grassPattern?
+      @grassPattern = ctx.createPattern @getCurrentFrame(), 'repeat'
+
+    if @grassPattern?
+      ctx.clearRect 0, 0, $(window).width(), $(window).height()
+
+      ctx.fillStyle = @grassPattern
+      ctx.fillRect 0, 0, $(window).width() * 2, $(window).height() * 2
 
 module.exports = World
 

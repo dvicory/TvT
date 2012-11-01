@@ -9,6 +9,7 @@ SERVER_LIB = \
 
 CLIENT_LIB = \
 	lib/client/Sprite.js \
+	lib/client/World.js \
 	lib/client/Player.js \
 	lib/client/Client.js
 

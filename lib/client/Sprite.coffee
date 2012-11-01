@@ -3,25 +3,25 @@
 # @copyright BZFX
 # @author Daniel Vicory
 class Sprite extends pulse.Sprite
-  worldInfo:
-    position:
-      x: 0
-      y: 0
-    rotation: 0
-    velocity:
-      x: 0
-      y: 0
-    maxVelocity: 0
-    velocityFactor: 0
-    angularVelocity: 0
-    maxAngularVelocity: 0
-    angularVelocityFactor: 0
-
   constructor: (args) ->
     args ?= {}
 
     # call parent constructor, we'll get access to our parent's members now
     super args
+
+    @worldInfo =
+      position:
+        x: 0
+        y: 0
+      rotation: 0
+      velocity:
+        x: 0
+        y: 0
+      maxVelocity: 0
+      velocityFactor: 0
+      angularVelocity: 0
+      maxAngularVelocity: 0
+      angularVelocityFactor: 0
 
   update: (elapsedMS) ->
     if @worldInfo.angularVelocityFactor isnt 0 or @worldInfo.velocityFactor isnt 0

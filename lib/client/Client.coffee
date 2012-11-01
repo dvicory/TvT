@@ -1,5 +1,5 @@
 EventEmitter = require('../common/EventEmitter')
-Player = require('./Player')
+World = require('./World')
 
 pulse.EventManager = EventEmitter
 
@@ -22,9 +22,9 @@ pulse.ready ->
 
   engine.scenes.activateScene scene
 
-  # spawn local player
-  localPlayer = new Player
-  layer.addNode localPlayer
+  # instantiate world
+  world = new World
+  layer.addNode world
 
   # window resizing support
   $(window).resize ->
