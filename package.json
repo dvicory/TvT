@@ -24,7 +24,7 @@
     "Daniel Vicory <dvicory@gmail.com> (http://bzfx.net/)",
     "Jason Berry <bloodlustr@gmail.com>",
     "Pete Cruz",
-    "Jerry Medina"
+    "Jerry Medina <jerryfoxYT@gmail.com>"
   ],
   "dependencies" : {
     "browserify": "1.16.x",
