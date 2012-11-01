@@ -26,5 +26,26 @@ pulse.ready ->
   localPlayer = new Player
   layer.addNode localPlayer
 
+  # window resizing support
+  $(window).resize ->
+    engine.size =
+      width: $(window).width()
+      height: $(window).height()
+
+    $('#gameWindow > div').width $(window).width()
+    $('#gameWindow > div').height $(window).height()
+
+    $('#gameWindow canvas').attr 'width', $(window).width()
+    $('#gameWindow canvas').attr 'height', $(window).height()
+
+    for own key, scene of engine.scenes.scenes
+      scene._private.defaultSize =
+        width: $(window).width()
+        height: $(window).height()
+      for own key, layer of scene.layers
+        layer.size =
+          width: $(window).width()
+          height: $(window).height()
+
   count = 0
   engine.go 20
