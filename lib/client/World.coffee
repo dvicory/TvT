@@ -23,22 +23,54 @@ class World extends Sprite
       @localPlayer = new Player
       @worldLayer.addNode @localPlayer
 
-    # for later...
+    # setup offscreen background canvas if we haven't already
+    if @texture.percentLoaded is 100 and !@offscreenBackground?
+      @offscreenBackground = document.createElement('canvas')
+      @setupOffscreenBackground()
+
+      # resize and redraw offscreen canvas if window resizes
+      $(window).resize => @setupOffscreenBackground()
+
+    # we need the local player's position to see where to do the tile
     if @localPlayer?
       @position = @localPlayer.position
-      @rotation = @localPlayer.rotation
 
     super elapsedMS
 
   draw: (ctx) ->
-    if !@grassPattern?
-      @grassPattern = ctx.createPattern @getCurrentFrame(), 'repeat'
+    # we obviously haven't finished loading the texture yet...
+    if @texture.percentLoaded isnt 100 or @size.width is 0 or @size.height is 0
+      return
 
-    if @grassPattern?
-      ctx.clearRect 0, 0, $(window).width(), $(window).height()
+    # to draw the grass texture, we use an offscreen canvas
+    # make sure it exists...
+    if @offscreenBackground?
+      # this is so the background moves with the tank
+      startX = Math.round(@position.x) % @texture.width()
+      startY = Math.round(@position.y) % @texture.height()
 
-      ctx.fillStyle = @grassPattern
-      ctx.fillRect 0, 0, $(window).width() * 2, $(window).height() * 2
+      # can't draw if the starting positions are negative, so wrap around
+      if startX < 0
+        startX += @texture.width()
+      if startY < 0
+        startY += @texture.height()
+
+      # draw to our context from offscreen canvas
+      ctx.drawImage(@offscreenBackground, startX, startY, $(window).width(), $(window).height(), 0, 0, $(window).width(), $(window).height())
+
+  setupOffscreenBackground: ->
+    @offscreenBackground.width = Math.ceil((($(window).width() + @texture.width()) / @texture.width())) * @texture.width()
+    @offscreenBackground.height = Math.ceil((($(window).height() + @texture.height()) / @texture.height())) * @texture.height()
+
+    ctx = @offscreenBackground.getContext '2d'
+
+    # create pattern and set it as the fill
+    bgPattern = ctx.createPattern @getCurrentFrame(), 'repeat'
+    ctx.fillStyle = bgPattern
+
+    # fill whole offscreen background with repeating pattern
+    ctx.fillRect 0, 0, @offscreenBackground.width, @offscreenBackground.height
+
 
 module.exports = World
 
