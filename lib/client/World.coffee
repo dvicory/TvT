@@ -4,7 +4,7 @@ Player = require('./Player')
 class World extends Sprite
   constructor: (args) ->
     args ?= {}
-    args.src = 'img/textures/grass.png';
+    args.src = 'img/textures/other/grass.png';
     
     super args
 

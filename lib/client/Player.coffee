@@ -4,7 +4,7 @@ class Player extends Sprite
   constructor: (args) ->
     args ?= {}
     
-    args.src = 'img/textures/tank_rogue.png';
+    args.src = 'img/textures/custom/tank_rogue.png';
     
     super args
 
