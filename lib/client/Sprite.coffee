@@ -23,6 +23,11 @@ class Sprite extends pulse.Sprite
       maxAngularVelocity: 0
       angularVelocityFactor: 0
 
+    # force sprite to be redrawn if window resizes
+    # fixes bug of sprites not drawing unless moved after resize
+    $(window).resize =>
+      @updated = true
+
   update: (elapsedMS) ->
     if @worldInfo.angularVelocityFactor isnt 0 or @worldInfo.velocityFactor isnt 0
       @updateVelocity()
