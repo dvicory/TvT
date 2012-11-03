@@ -55,12 +55,18 @@ class World extends Sprite
       if startY < 0
         startY += @texture.height()
 
+      width = @parent.size.width
+      height = @parent.size.height
+
       # draw to our context from offscreen canvas
-      ctx.drawImage(@offscreenBackground, startX, startY, $(window).width(), $(window).height(), 0, 0, $(window).width(), $(window).height())
+      ctx.drawImage(@offscreenBackground, startX, startY, width, height, 0, 0, width, height)
 
   setupOffscreenBackground: ->
-    @offscreenBackground.width = Math.ceil((($(window).width() + @texture.width()) / @texture.width())) * @texture.width()
-    @offscreenBackground.height = Math.ceil((($(window).height() + @texture.height()) / @texture.height())) * @texture.height()
+    width = @parent.size.width
+    height = @parent.size.height
+
+    @offscreenBackground.width = Math.ceil(((width + @texture.width()) / @texture.width())) * @texture.width()
+    @offscreenBackground.height = Math.ceil(((height + @texture.height()) / @texture.height())) * @texture.height()
 
     ctx = @offscreenBackground.getContext '2d'
 
@@ -70,7 +76,6 @@ class World extends Sprite
 
     # fill whole offscreen background with repeating pattern
     ctx.fillRect 0, 0, @offscreenBackground.width, @offscreenBackground.height
-
 
 module.exports = World
 
