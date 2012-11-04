@@ -8,6 +8,7 @@ SERVER_LIB = \
 	lib/server/Server.js
 
 CLIENT_LIB = \
+	lib/client/Camera.js \
 	lib/client/Sprite.js \
 	lib/client/World.js \
 	lib/client/Player.js \
