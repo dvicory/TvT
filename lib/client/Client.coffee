@@ -10,7 +10,7 @@ pulse.ready ->
       width: $(window).width()
       height: $(window).height()
 
-  scene = new pulse.Scene
+  scene = new pulse.Scene name: 'Main'
   layer = new pulse.Layer
 
   layer.anchor =
@@ -23,7 +23,7 @@ pulse.ready ->
   engine.scenes.activateScene scene
 
   # instantiate world
-  world = new World
+  world = new World name: 'World'
   layer.addNode world
 
   # window resizing support

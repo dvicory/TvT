@@ -1,5 +1,3 @@
-#World class that extends Spite
-
 Sprite = require('./Sprite')
 Player = require('./Player')
 
@@ -7,14 +5,14 @@ class World extends Sprite
   constructor: (args) ->
     args ?= {}
     args.src = 'img/textures/other/grass.png';
-    
+
     # call parent constructor, we'll get access to Sprite's members now
     super args
 
   update: (elapsedMS) ->
     # make worldLayer, which includes world elements
     # the layer world is in is a special layer
-    if @parent? and !@worldLayer?         #@Parents from pulse.Node
+    if @parent? and !@worldLayer?
       @worldLayer = new pulse.Layer
       @worldLayer.anchor =
         x: 0
@@ -23,13 +21,14 @@ class World extends Sprite
       @parent.parent.addLayer @worldLayer
 
       # spawn the local player
-      @localPlayer = new Player
+      @localPlayer = new Player name: 'Local Player'
       @worldLayer.addNode @localPlayer
 
-    # setup offscreen background canvas if we haven't already
-    if @texture.percentLoaded is 100 and !@offscreenBackground? #this.offscreensBackground initially null 1st time around.
-      @offscreenBackground = document.createElement('canvas')   #document.createElement() from javascript library
-      @setupOffscreenBackground()  #method down below
+    # setup offscreenBackground canvas if we haven't already
+    # offscreenBackground is initially null
+    if @texture.percentLoaded is 100 and !@offscreenBackground?
+      @offscreenBackground = document.createElement('canvas')
+      @setupOffscreenBackground()
 
       # resize and redraw offscreen canvas if window resizes
       $(window).resize => @setupOffscreenBackground()
@@ -82,85 +81,74 @@ class World extends Sprite
 
 module.exports = World
 
-ParseMapFile = (sr) ->
+ParseMapFile = (map) ->
   position    = null
   size        = null
   rotation    = 0
-  currentType = ""   # internal identifier to indicate which texture to construct
-  badObjects  = 0    # counts object blocks that failed to load
+  currentType = ''    # internal identifier to indicate which sprite to construct
+  badObjects  = 0     # counts object blocks that failed to load
 
-  #Control frags
+  # control flags
   inWorldBlock = no 
   inBlock      = no
 
-  worldName   = "No Name" # default values for world data will be overidden if found in the file
-  worldSize   = 800
+  worldName = 'No Name' # default values for world data will be overidden if found in the file
+  worldSize = 800
 
+  lines = map.split('\n')
 
-  line = ""  #string?
+  for line in lines
+    line = line.toLowerCase()
+    args = line.split(/(?: )+/)
 
+    if args.length is 0
+      continue
 
-  lines = sr.split('\n')
-
-  for line in lines    #while loops replaced
-    #console.log(line)
-    line = line.toLowerCase().trim()         
-
-    if line.lastIndexOf("world", 0) is 0
+    if args[0] is 'world'
       inWorldBlock = yes
       inBlock      = no
 
-    if line.lastIndexOf("box", 0) is 0 or line.lastIndexOf("pyramid", 0) is 0
+    if args[0] is 'box' or args[0] is 'pyramid'
       inWorldBlock = no
       inBlock      = yes
-      currentType  = line.split(' ',0)
+      currentType  = line
 
     if inWorldBlock
-      if line.lastIndexOf("name", 0) is 0
-        worldName = line.trim().slice(4).trim() 
-      if line.lastIndexOf("size", 0) is 0
-        worldSize = parseFloat((line.trim().slice(4).trim())  #Note: lower case "s" on substring
-        #Convert.toSingle() -> parseFloat(()
-    
+      if args[0] is 'name'
+        worldName = args[1] if args.length >= 2
+      else if args[0] is 'size'
+        worldSize = parseFloat(args[1]) if args.length >= 2
+
     if inBlock
-      if line.lastIndexOf("position", 0) is 0 or line.lastIndexOf("pos", 0) is 0
-        #stringArray = new Array(9)
-        rawArgs = line.trim().slice(9).split(' ')
-        rawArgs.ForEach(v => coords.Add(parseFloat((v)))
+      if args[0] is 'position' or args[0] is 'pos'
+        continue unless args.length >= 3 and (parseFloat(args[3]) isnt 0 or parseFloat(args[3]) is NaN)
+        position =
+          x: parseFloat(args[1])
+          y: parseFloat(args[2])
+      else if args[0] is 'size'
+        continue unless args.length >= 3
+        size =
+          x: parseFloat(args[1])
+          y: parseFloat(args[2])
+      else if args[0] is 'rotation' or args[0] is 'rot'
+        continue unless args.length >= 2
+        rotation = parseFloat(args[1])
 
-        # only load objects with at least x, y and a zero z-position
-        if coords.Count is 2 or ((coords.Count is 3) and (Math.abs(coords[2]) <= Single.Epsilon)) 
-        position = new Vector2(coords[0], coords[1]) 
-      
-      else if line.lastIndexOf("size", 0) is 0
-        #stringArray = new Array(5)
-        rawArgs = line.trim().slice(5).split(' ')
-        #rawArgs = new Array(5)
-        #rawArgs = line.trim().substring(5).split(' ').ToList()
-        rawArgs.ForEach(v => coords.Add(parseFloat((v)))
-
-        # only load objects with at least x and y size
-        if coords.Count >= 2
-          size = new Vector2(coords[0], coords[1]) 
-
-      else if line.lastIndexOf("rotation", 0) is 0 or line.lastIndexOf("rot", 0) is 0
-        coords = line.trim().slice(9).split(' ')
-        rotation = parseFloat((coords[0].trim())
-    
-    if line is "end"
-      if position.HasValue and size.HasValue
-        tiled.Add(new Box(this, boxTexture, position.Value, size.Value * 2, MathHelper.ToRadians(rotation))) if currentType.Equals("box")
-        stretched.Add(new Pyramid(this, pyramidTexture, position.Value, size.Value * 2, MathHelper.ToRadians(rotation))) if currentType.Equals("pyramid")
+    if line is 'end'
+      if position? and size?
+        # TODO fix this
+        tiled.Add(new Box(this, boxTexture, position.Value, size.Value * 2, MathHelper.ToRadians(rotation))) if currentType.Equals('box')
+        stretched.Add(new Pyramid(this, pyramidTexture, position.Value, size.Value * 2, MathHelper.ToRadians(rotation))) if currentType.Equals('pyramid')
       else
         badObjects++
 
-      # when finished with one block clear all variables
-      inBlock  = no 
-      position = null
-      size     = null
-      rotation = 0
+    # when finished with one block clear all variables
+    inBlock  = no 
+    position = null
+    size     = null
+    rotation = 0
 
-
-  mapObjects.Add("tiled", tiled)
+  # TODO fix this
+  mapObjects.Add('stretched', tiled)
   mapObjects.Add("stretched", stretched)
   return mapObjects
