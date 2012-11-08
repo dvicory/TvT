@@ -121,18 +121,41 @@ ParseMapFile = (map) ->
 
     if inBlock
       if args[0] is 'position' or args[0] is 'pos'
-        continue unless args.length >= 3 and (parseFloat(args[3]) isnt 0 or parseFloat(args[3]) is NaN)
+        # this is so we only accept it if the z-value is missing or is 0
+        continue unless args.length >= 3 and (parseFloat(args[3]) is 0 or isNaN(parseFloat(args[3])))
+
+        x = parseFloat(args[1])
+        y = parseFloat(args[2])
+
+        # we don't want any NaNs stuck in here
+        continue if isNaN(x) or isNaN(y)
+
         position =
-          x: parseFloat(args[1])
-          y: parseFloat(args[2])
+          x: x
+          y: y
+
       else if args[0] is 'size'
         continue unless args.length >= 3
+
+        x = parseFloat(args[1])
+        y = parseFloat(args[2])
+
+        # we don't want any NaNs stuck in here
+        continue if isNaN(x) or isNaN(y)
+
         size =
-          x: parseFloat(args[1])
-          y: parseFloat(args[2])
+          x: x
+          y: y
+
       else if args[0] is 'rotation' or args[0] is 'rot'
         continue unless args.length >= 2
-        rotation = parseFloat(args[1])
+
+        rot = parseFloat(args[1])
+
+        # we don't want a NaN stuck in here
+        continue if isNaN(rot)
+
+        rotation = rot
 
     if line is 'end'
       if position? and size?
@@ -143,7 +166,7 @@ ParseMapFile = (map) ->
         badObjects++
 
     # when finished with one block clear all variables
-    inBlock  = no 
+    inBlock  = no
     position = null
     size     = null
     rotation = 0
