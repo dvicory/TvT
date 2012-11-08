@@ -66,17 +66,11 @@ class Camera
     @panPosition = pPos
 
   lookAt: (position) ->
-    # create a copy of position
-    tmp =
-      x: position.x
-      y: position.y
+    pos =
+      x: position.x + @panPosition.x - @origin.x
+      y: position.y + @panPosition.y - @origin.y
 
-    tmp.x += @panPosition.x
-    tmp.x -= @origin.x
-    tmp.y += @panPosition.y
-    tmp.y -= @origin.y
-
-    @position = tmp
+    @position = pos
 
   translateView: (ctx) ->
     ctx.translate -@cameraPosition.x, -@cameraPosition.y
