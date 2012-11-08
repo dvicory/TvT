@@ -1,3 +1,4 @@
+Camera = require('./Camera')
 Sprite = require('./Sprite')
 Player = require('./Player')
 
@@ -8,6 +9,8 @@ class World extends Sprite
 
     # call parent constructor, we'll get access to Sprite's members now
     super args
+
+    @camera = new Camera
 
   update: (elapsedMS) ->
     # make worldLayer, which includes world elements
@@ -21,7 +24,7 @@ class World extends Sprite
       @parent.parent.addLayer @worldLayer
 
       # spawn the local player
-      @localPlayer = new Player name: 'Local Player'
+      @localPlayer = new Player name: 'Local Player', world: @
       @worldLayer.addNode @localPlayer
 
     # setup offscreenBackground canvas if we haven't already

@@ -48,5 +48,6 @@ class Player extends Sprite
 
   update: (elapsedMS) ->
     super elapsedMS
+    @world.camera.lookAt(@position) if @world.camera?
 
 module.exports = Player
