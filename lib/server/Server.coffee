@@ -1,9 +1,10 @@
-'use strict'
-
+connect = require('connect')
 http = require('http')
 
-handler = (req, res) ->
-  res.writeHead(200)
-  res.end('Hello World!')
+app = connect()
+  .use(connect.static('dist'))
+  .use(connect.directory('dist'))
+  .use((req, res) ->
+    res.end('Hello from Connect!\n))
 
-app = http.createServer(handler).listen(3333)
+http:createServer(app).listen(3000);
