@@ -35,7 +35,8 @@ At this point, you'll only have TvT's dependencies setup. In the TvT directory y
 This will compile TvT's CoffeeScript into JavaScript and get the modules ready for the browser. It is installed locally and not into any system directories.
 
 ## Running
-execute script 
+To run the TvT server, execute the following script:
+
     bin/server.js 8080
 
-This would run the TvT server on [localhost 8080](http://localhost:8080)
+This would run the TvT server on [localhost 8080](http://localhost:8080) and use Chrome to play TvT
