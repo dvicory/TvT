@@ -6,7 +6,7 @@ TvT (Tanks vs. Tanks) is an in-browser 2D top-down multiplayer game inspired by 
 TvT is brought to you by the use of [Node.js](http://nodejs.org/), [CoffeeScript](http://coffeescript.org/), several packages available via [npm](https://npmjs.org/), Chrome, and other technologies.
 
 ### Make
-You'll need the `make` command to build TvT at this time. For *nix-based platforms, you probably already have this, or can get it easily. For Windows, your best bet will be [Cygwin](http://www.cygwin.com/).
+You'll need the `make` command to build TvT at this time. For Unix-based platforms, you probably already have this, or can get it easily. For Windows, your best bet will be [Cygwin](http://www.cygwin.com/).
 
 ### Git
 It's easiest to work with our software if you have Git, because you can pull the latest changes quickly and easily. Visit the [Git website](http://git-scm.com/) to [download the latest version](http://git-scm.com/downloads). Note that this is probably easier on *nix-based platforms.
@@ -33,3 +33,9 @@ At this point, you'll only have TvT's dependencies setup. In the TvT directory y
     make install
 
 This will compile TvT's CoffeeScript into JavaScript and get the modules ready for the browser. It is installed locally and not into any system directories.
+
+## Running
+execute script 
+    bin/server.js 8080
+
+This would run the TvT server on [localhost 8080](http://localhost:8080)
