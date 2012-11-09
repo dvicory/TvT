@@ -21,8 +21,8 @@ In almost all circumstances, all new Node.js installations come with npm. So you
 Once you've gotten Node.js and npm, installing TvT's other dependencies becomes easy! If you don't have Git, you'll need to get a tarball from GitHub instead and unpack it.
 
     git clone git://github.com/dvicory/TvT.git
-    git submodule init
     cd TvT
+    git submodule init
     npm install .
 
 `npm install .` will take a look at `package.json` and go ahead and grab everything you need to build TvT and run a TvT server.
