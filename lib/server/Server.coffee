@@ -1,10 +1,12 @@
 connect = require('connect')
 http = require('http')
 
-app = connect()
-  .use(connect.static('dist'))
-  .use(connect.directory('dist'))
-  .use((req, res) ->
-    res.end('Hello from Connect!\n))
+class Server
+  constructor: (@directory, @port) ->
+    @app = connect()
+      .use(connect.static(@directory))
+      .use(connect.directory(@directory))
 
-http:createServer(app).listen(3000);
+    http.createServer(@app).listen(@port)
+
+module.exports = Server
