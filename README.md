@@ -40,4 +40,4 @@ To run the TvT server, execute the following script:
 
     bin/server.js 8080
 
-This would run the TvT server on [localhost 8080](http://localhost:8080) and use Chrome to play TvT
+This will run the TvT server on [localhost:8080](http://localhost:8080). Open that with Google Chrome and play!

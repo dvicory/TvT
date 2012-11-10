@@ -33,6 +33,7 @@ clean:
 
 install: all
 	cp -pr lib/client/public ./dist
+	cp vendor/pulse/build/bin/*.js vendor/pulse/build/bin/modules/*.js ./dist/js
 
 uninstall:
 	rm -rf dist

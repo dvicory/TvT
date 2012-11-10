@@ -48,59 +48,10 @@ class Sprite extends pulse.Sprite
     super elapsedMS
 
   draw: (ctx) ->
-    # skip if we're not loaded
-    if @texture.percentLoaded < 100 or @size.width is 0 or @size.height is 0
-      return
-
-    # Only redraw this canvas if the texture coords or texture changed.
-    if @textureUpdated
-      # Clear my canvas
-      @_private.context.clearRect(0, 0, @canvas.width, @canvas.height)
-
-      slice = @getCurrentFrame()
-
-      # Draws the texture to this visual's canvas
-      @_private.context.drawImage(slice, 0, 0, @size.width, @size.height)
-
-      @textureUpdated = false
-
-    if @canvas.width is 0 or @canvas.height is 0
-      return
-
-    ctx.save()
-
-    # apply the alpha for this visual node
-    ctx.globalAlpha = @alpha / 100
-
-    @world.camera.transformView(ctx) if @world.camera?
-
-    # apply the rotation if needed
-    if @rotation isnt 0
-      rotationX = @positionTopLeft.x + @size.width * Math.abs(@scale.x) / 2
-      rotationY = @positionTopLeft.y + @size.height * Math.abs(@scale.y) / 2
-
-      ctx.translate(rotationX, rotationY)
-      ctx.rotate((Math.PI * (@rotation % 360)) / 180)
-      ctx.translate(-rotationX, -rotationY)
-
-    # apply the scale
-    ctx.scale(@scale.x, @scale.y)
-
-    px = @positionTopLeft.x / @scale.x
-    py = @positionTopLeft.y / @scale.y
-
-    if @shadowEnabled
-      ctx.shadowOffsetX = @shadowOffsetX
-      ctx.shadowOffsetY = @shadowOffsetY
-      ctx.shadowBlur = @shadowBlur
-      ctx.shadowColor = @shadowColor
-
-    # draw the canvas
-    ctx.drawImage(@canvas, px, py)
-
-    ctx.restore()
-
-    @updated = false
+    if @world.camera?
+      super ctx, @world.camera.transformView
+    else
+      super ctx
 
   updateVelocity: ->
     @worldInfo.velocity.x = Math.cos((@worldInfo.rotation + (Math.PI / 2))) * @worldInfo.velocityFactor * @worldInfo.maxVelocity

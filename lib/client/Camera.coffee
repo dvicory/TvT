@@ -72,7 +72,7 @@ class Camera
 
     @position = pos
 
-  transformView: (ctx) ->
+  transformView: (ctx) =>
     ctx.translate -@cameraPosition.x, -@cameraPosition.y
 
   validateZoom: (zoom) ->
