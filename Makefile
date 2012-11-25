@@ -8,9 +8,11 @@ COMMON_LIB = \
 	lib/common/DynamicWorldObject.js
 
 SERVER_LIB = \
+	lib/server/Protocol.js \
 	lib/server/Server.js
 
 CLIENT_LIB = \
+	lib/client/Protocol.js \
 	lib/client/Camera.js \
 	lib/client/Sprite.js \
 	lib/client/World.js \
