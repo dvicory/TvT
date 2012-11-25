@@ -3,7 +3,9 @@ connect = require('connect')
 io = require('socket.io')
 
 class Server
-  constructor: (@directory, @port) ->
+  constructor: (@argv, @directory) ->
+    # TODO check arguments
+
     # configure connect app
     @app = connect()
       .use(connect.static(@directory))
@@ -11,7 +13,7 @@ class Server
 
     # start http server
     @server = http.createServer(@app)
-    @server.listen(@port)
+    @server.listen(@argv.port)
 
     # start taking socket.io connections
     io.listen(@server)
