@@ -37,6 +37,12 @@ class Sprite extends pulse.Sprite
     if @worldInfo.angularVelocityFactor isnt 0
       @worldInfo.rotation += @worldInfo.angularVelocity * (elapsedMS / 1000)
 
+      # wrap the rotation between -pi and pi
+      if @worldInfo.rotation > Math.PI
+        @worldInfo.rotation = @worldInfo.rotation - 2 * Math.PI
+      if @worldInfo.rotation < -Math.PI
+        @worldInfo.rotation = 2 * Math.PI + @worldInfo.rotation
+
       @rotation = @worldInfo.rotation * (180 / Math.PI)
 
     if @worldInfo.velocityFactor isnt 0
