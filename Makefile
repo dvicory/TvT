@@ -2,7 +2,10 @@ COFFEEC=coffee -cp
 BROWSERIFYC=browserify
 
 COMMON_LIB = \
-	lib/common/EventEmitter.js
+	lib/common/EventEmitter.js \
+	lib/common/WorldObject.js \
+	lib/common/StaticWorldObject.js \
+	lib/common/DynamicWorldObject.js
 
 SERVER_LIB = \
 	lib/server/Server.js
