@@ -1,4 +1,6 @@
 EventEmitter = require('../common/EventEmitter')
+
+Protocol = require('./Protocol')
 World = require('./World')
 
 pulse.EventManager = EventEmitter
@@ -21,10 +23,6 @@ pulse.ready ->
   engine.scenes.addScene scene
 
   engine.scenes.activateScene scene
-
-  # instantiate world
-  world = new World name: 'World'
-  layer.addNode world
 
   # window resizing support
   $(window).resize ->
@@ -49,3 +47,42 @@ pulse.ready ->
 
   count = 0
   engine.go 20
+
+  # connect to server
+  # TODO window.location.origin only supported in chrome
+  socket = io.connect window.location.origin
+
+  # there was an error
+  socket.on 'error', (err) ->
+    # TODO handle errors better
+    if world?
+      layer.removeNode world
+      delete world
+
+    console.error err
+
+  # we connected
+  socket.on 'connect', ->
+    socket.once 'protocol', (serverVersion) =>
+      # TODO we should kill ourselves better if this fails
+      if serverVersion isnt Protocol.VERSION
+        throw new TypeError("Protocol version mismatch (server: #{serverVersion}, client: #{Protocol.VERSION}).")
+
+    # pass along joinData
+    joinData =
+      callsign: "random callsign #{Math.floor(Math.random() * 101)}"
+      team: 'red'
+      tag: 'some tag'
+
+    # instantiate world
+    world = new World name: 'World', socket: socket, joinData: joinData
+    layer.addNode world
+
+  # we disconnected
+  socket.on 'disconnect', ->
+    # TODO handle disconnections better
+    if world?
+      layer.removeNode world
+      delete world
+
+    return

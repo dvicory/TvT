@@ -5,17 +5,21 @@ LocalPlayer = require('./LocalPlayer')
 class World extends DynamicSprite
   constructor: (args) ->
     args ?= {}
-    args.src = 'img/textures/other/grass.png';
+    args.src = 'img/textures/other/grass.png'
+
+    throw new TypeError('socket is a required key in args and must be a socket.io socket') unless args.socket   instanceof io.SocketNamespace
+    throw new TypeError('joinData is a required key in args and must be an object')        unless args.joinData instanceof Object
+
+    @socket = args.socket
 
     # call parent constructor, we'll get access to Sprite's members now
     super args
 
+    # create camera now
     @camera = new Camera
 
-  update: (elapsedMS) ->
-    # make worldLayer, which includes world elements
-    # the layer world is in is a special layer
-    if @parent? and !@worldLayer?
+    # we need a setup callback because certain things aren't ready to use in the constructor
+    setupCallback = =>
       @worldLayer = new pulse.Layer
       @worldLayer.anchor =
         x: 0
@@ -23,12 +27,32 @@ class World extends DynamicSprite
 
       @parent.parent.addLayer @worldLayer
 
-      # create the local player
-      @localPlayer = new LocalPlayer name: 'Local Player', world: @
-      @worldLayer.addNode @localPlayer
+      @socket.once 'self join', =>
+        # create the local player now
+        # TODO technically we shouldn't be spawning now
+        @localPlayer = new LocalPlayer name: 'Local Player', world: @
+        @worldLayer.addNode @localPlayer
 
-    # setup offscreenBackground canvas if we haven't already
-    # offscreenBackground is initially null
+      # we need to let client do its things before we can emit these events, thus the timeout callback
+      # we'll also bind where needed
+      @socket.emit 'join', args.joinData
+      @socket.emit 'get state'
+
+      @socket.on 'new player', (newPlayerData) ->
+        console.log newPlayerData
+
+      @socket.on 'remove player', (removePlayerData) ->
+        console.log removePlayerData
+
+      @socket.on 'update player', (updatePlayerData) ->
+        console.log updatePlayerData
+
+    setTimeout setupCallback, 0
+
+  update: (elapsedMS) ->
+    # TODO move this to setupCallback
+    # most likely problem is the callback gets fired before the texture is loaded
+    # asset loading beforehand will solve this
     if @texture.percentLoaded is 100 and !@offscreenBackground?
       @offscreenBackground = document.createElement('canvas')
       @setupOffscreenBackground()

@@ -11,6 +11,8 @@ COMMON_LIB = \
 
 SERVER_LIB = \
 	lib/server/Protocol.js \
+	lib/server/World.js \
+	lib/server/Player.js \
 	lib/server/Server.js
 
 CLIENT_LIB = \

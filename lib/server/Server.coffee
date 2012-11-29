@@ -2,6 +2,12 @@ http = require('http')
 connect = require('connect')
 io = require('socket.io')
 
+glmatrix = require('../../vendor/gl-matrix/gl-matrix')
+# Force Array type - rather not deal with endianness for typed arrays
+glmatrix.glMatrixArrayType = glmatrix.MatrixArray = glmatrix.setMatrixArrayType(Array)
+
+World = require('./World')
+
 class Server
   constructor: (@argv, @directory) ->
     # TODO check arguments
@@ -21,5 +27,8 @@ class Server
     # force the transport types
     @io.configure =>
       @io.set 'transports', ['websocket', 'flashsocket']
+
+    # create the world
+    @world = new World(@)
 
 module.exports = Server
