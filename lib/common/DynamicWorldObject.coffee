@@ -46,8 +46,6 @@ class DynamicWorldObject extends StaticWorldObject
 
       @emit 'update.position', @
 
-    super elapsedMS
-
   updateVelocity: ->
     @velocity[0] = Math.cos((@rotation + (Math.PI / 2))) * @velocityFactor * @maxVelocity
     @velocity[1] = Math.sin((@rotation + (Math.PI / 2))) * @velocityFactor * @maxVelocity
