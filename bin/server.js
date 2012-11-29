@@ -2,9 +2,15 @@
 
 var optimist = require('optimist')
   .usage('Usage: ' + process.argv[1] + ' -p [port]')
-  .options('p', {
-    alias: 'port',
-    default: 3000
+  .options({
+    port : {
+      alias : 'p',
+      default : 3000
+    },
+    world : {
+      alias : 'w',
+      demand : true
+    }
   })
 ;
 
