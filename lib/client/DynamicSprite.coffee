@@ -1,8 +1,8 @@
-# Sprite, a root class of all visuals in TvT.
+# DynamicSprite, a root class of all visuals in TvT.
 #
 # @copyright BZFX
 # @author Daniel Vicory
-class Sprite extends pulse.Sprite
+class DynamicSprite extends pulse.Sprite
   constructor: (args) ->
     args ?= {}
 
@@ -64,4 +64,4 @@ class Sprite extends pulse.Sprite
     @worldInfo.velocity.y = Math.sin((@worldInfo.rotation + (Math.PI / 2))) * @worldInfo.velocityFactor * @worldInfo.maxVelocity
     return
 
-module.exports = Sprite
+module.exports = DynamicSprite

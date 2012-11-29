@@ -14,9 +14,9 @@ SERVER_LIB = \
 CLIENT_LIB = \
 	lib/client/Protocol.js \
 	lib/client/Camera.js \
-	lib/client/Sprite.js \
+	lib/client/DynamicSprite.js \
 	lib/client/World.js \
-	lib/client/Player.js \
+	lib/client/LocalPlayer.js \
 	lib/client/Client.js
 
 all: common server client

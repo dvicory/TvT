@@ -1,10 +1,10 @@
-Sprite = require('./Sprite')
+DynamicSprite = require('./DynamicSprite')
 
-class Player extends Sprite
+class LocalPlayer extends DynamicSprite
   constructor: (args) ->
     args ?= {}
     
-    args.src = 'img/textures/custom/tank_rogue.png';
+    args.src = 'img/textures/custom/tank_rogue.png'
     
     super args
 
@@ -50,4 +50,4 @@ class Player extends Sprite
     super elapsedMS
     @world.camera.lookAt(@position) if @world.camera?
 
-module.exports = Player
+module.exports = LocalPlayer

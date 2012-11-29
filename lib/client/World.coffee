@@ -1,8 +1,8 @@
 Camera = require('./Camera')
-Sprite = require('./Sprite')
-Player = require('./Player')
+DynamicSprite = require('./DynamicSprite')
+LocalPlayer = require('./LocalPlayer')
 
-class World extends Sprite
+class World extends DynamicSprite
   constructor: (args) ->
     args ?= {}
     args.src = 'img/textures/other/grass.png';
@@ -23,8 +23,8 @@ class World extends Sprite
 
       @parent.parent.addLayer @worldLayer
 
-      # spawn the local player
-      @localPlayer = new Player name: 'Local Player', world: @
+      # create the local player
+      @localPlayer = new LocalPlayer name: 'Local Player', world: @
       @worldLayer.addNode @localPlayer
 
     # setup offscreenBackground canvas if we haven't already
