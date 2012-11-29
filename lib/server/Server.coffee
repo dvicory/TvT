@@ -16,6 +16,10 @@ class Server
     @server.listen(@argv.port)
 
     # start taking socket.io connections
-    io.listen(@server)
+    @io = io.listen(@server)
+
+    # force the transport types
+    @io.configure =>
+      @io.set 'transports', ['websocket', 'flashsocket']
 
 module.exports = Server
