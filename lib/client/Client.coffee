@@ -49,8 +49,7 @@ pulse.ready ->
   engine.go 20
 
   # connect to server
-  # TODO window.location.origin only supported in chrome
-  socket = io.connect window.location.origin
+  socket = io.connect "#{window.location.protocol}//#{window.location.host}"
 
   # there was an error
   socket.on 'error', (err) ->
