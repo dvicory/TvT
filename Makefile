@@ -6,7 +6,8 @@ COMMON_LIB = \
 	lib/common/WorldObject.js \
 	lib/common/StaticWorldObject.js \
 	lib/common/DynamicWorldObject.js \
-	lib/common/World.js
+	lib/common/World.js \
+	lib/common/Player.js
 
 SERVER_LIB = \
 	lib/server/Protocol.js \
