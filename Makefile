@@ -6,6 +6,9 @@ COMMON_LIB = \
 	lib/common/WorldObject.js \
 	lib/common/StaticWorldObject.js \
 	lib/common/DynamicWorldObject.js \
+	lib/common/Projection.js \
+	lib/common/Rectangle.js \
+	lib/common/RotatedRectangle.js \
 	lib/common/World.js \
 	lib/common/Player.js
 
