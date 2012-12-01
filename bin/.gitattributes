@@ -1,0 +1,2 @@
+# Force executable files in here to have LF line endings
+*.js eol=lf
