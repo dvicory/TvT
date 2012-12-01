@@ -1,8 +1,7 @@
 Camera = require('./Camera')
-DynamicSprite = require('./DynamicSprite')
 LocalPlayer = require('./LocalPlayer')
 
-class World extends DynamicSprite
+class World extends pulse.Sprite
   constructor: (args) ->
     args ?= {}
     args.src = 'img/textures/other/grass.png'
@@ -30,7 +29,7 @@ class World extends DynamicSprite
       @socket.once 'self join', =>
         # create the local player now
         # TODO technically we shouldn't be spawning now
-        @localPlayer = new LocalPlayer name: 'Local Player', world: @
+        @localPlayer = new LocalPlayer @, { name: 'Local Player' }
         @worldLayer.addNode @localPlayer
 
       # we need to let client do its things before we can emit these events, thus the timeout callback
