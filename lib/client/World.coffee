@@ -57,7 +57,7 @@ class World extends pulse.Sprite
       @setupOffscreenBackground()
 
       # resize and redraw offscreen canvas if window resizes
-      $(window).resize => @setupOffscreenBackground()
+      $(window).resize @setupOffscreenBackground
 
     # we need the local player's position to see where to do the tile
     if @localPlayer?
@@ -89,7 +89,7 @@ class World extends pulse.Sprite
       # draw to our context from offscreen canvas
       ctx.drawImage(@offscreenBackground, startX, startY, width, height, 0, 0, width, height)
 
-  setupOffscreenBackground: ->
+  setupOffscreenBackground: =>
     width  = @parent.size.width
     height = @parent.size.height
 
