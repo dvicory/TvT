@@ -35,7 +35,7 @@ class Player extends CommonPlayer
     @rotation = updateData.rotation
 
     # broadcast player update to everyone else
-    @socket.broadcast.emit 'update player', @MessageUpdatePlayer(@)
+    @socket.broadcast.emit 'update player', Player.MessageUpdatePlayer(@)
 
   @MessageNewPlayer: (player) ->
     slot     : player.slot
