@@ -28,6 +28,10 @@ class Server
     @io.configure =>
       @io.set 'transports', ['websocket', 'flashsocket']
 
+      @io.set 'close timeout', 25
+      @io.set 'heartbeat timeout', 25
+      @io.set 'heartbeat interval', 10
+
     # create the world
     @world = new World(@)
 
