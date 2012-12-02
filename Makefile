@@ -24,6 +24,7 @@ CLIENT_LIB = \
 	lib/client/Sprite.js \
 	lib/client/StaticSprite.js \
 	lib/client/DynamicSprite.js \
+	lib/client/Box.js \
 	lib/client/World.js \
 	lib/client/LocalPlayer.js \
 	lib/client/RemotePlayer.js \
