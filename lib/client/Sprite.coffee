@@ -17,13 +17,13 @@ class Sprite extends pulse.Sprite
 
     Object.defineProperty @, 'position',
       get: ->
-        x: (@model.position[0] + (@model.position[0] > 0 ? 0.5 : -0.5)) << 0
-        y: (@model.position[1] + (@model.position[1] > 0 ? 0.5 : -0.5)) << 0
+        x: ((@model.position[0] * @world.pixelsPerWorldUnit + (@model.position[0] > 0 ? 0.5 : -0.5)) << 0)
+        y: ((@model.position[1] * @world.pixelsPerWorldUnit + (@model.position[1] > 0 ? 0.5 : -0.5)) << 0)
 
     Object.defineProperty @, 'size',
       get: ->
-        width: @model.size[0]
-        height: @model.size[1]
+        width:  ((@model.size[0] * @world.pixelsPerWorldUnit + (@model.size[0] > 0 ? 0.5 : -0.5)) << 0)
+        height: ((@model.size[1] * @world.pixelsPerWorldUnit + (@model.size[1] > 0 ? 0.5 : -0.5)) << 0)
 
     Object.defineProperty @, 'rotation',
       get: ->

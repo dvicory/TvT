@@ -14,7 +14,7 @@ class RemotePlayer extends StaticSprite
     @model.callsign = callsign
     @model.tag = tag
 
-    @model.size = [124, 153]
+    @model.size = [9.72, 12]
 
     @world.socket.on 'update player', @handleUpdatePlayer
     @world.socket.on 'remove player', @handleRemovePlayer

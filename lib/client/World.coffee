@@ -15,6 +15,10 @@ class World extends pulse.Sprite
     # call parent constructor, we'll get access to Sprite's members now
     super args
 
+    Object.defineProperty @, 'pixelsPerWorldUnit',
+      writabale: false
+      value: 10
+
     # create camera now
     @camera = new Camera
 

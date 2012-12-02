@@ -14,9 +14,9 @@ class LocalPlayer extends DynamicSprite
     @model.callsign = callsign
     @model.tag = tag
 
-    @model.size = [124, 153]
-    @model.maxVelocity = 150
-    @model.maxAngularVelocity = Math.PI / 4
+    @model.size = [9.72, 12]
+    @model.maxVelocity = 25
+    @model.maxAngularVelocity = Math.PI / 2
 
     @events.on 'keydown', @handleKeyDown
     @events.on 'keyup', @handleKeyUp
