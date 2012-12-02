@@ -56,7 +56,7 @@ pulse.ready ->
     # TODO handle errors better
     if world?
       layer.removeNode world
-      delete world
+      world = null
 
     console.error err
 
@@ -82,6 +82,6 @@ pulse.ready ->
     # TODO handle disconnections better
     if world?
       layer.removeNode world
-      delete world
+      world = null
 
     return
