@@ -1,5 +1,6 @@
 Camera = require('./Camera')
 LocalPlayer = require('./LocalPlayer')
+RemotePlayer = require('./RemotePlayer')
 
 class World extends pulse.Sprite
   constructor: (args) ->
@@ -17,6 +18,9 @@ class World extends pulse.Sprite
     # create camera now
     @camera = new Camera
 
+    # need something to hold all the players
+    @players = {}
+
     # we need a setup callback because certain things aren't ready to use in the constructor
     setupCallback = =>
       @worldLayer = new pulse.Layer
@@ -32,21 +36,31 @@ class World extends pulse.Sprite
         @localPlayer = new LocalPlayer @, joinData.slot, joinData.team, joinData.callsign, joinData.tag, { name: 'Local Player' }
         @worldLayer.addNode @localPlayer
 
+      # bind relevant events that world takes care of
+      @socket.on 'new player', @handleNewPlayer
+      @socket.on 'remove player', @handleRemovePlayer
+
       # we need to let client do its things before we can emit these events, thus the timeout callback
-      # we'll also bind where needed
       @socket.emit 'join', args.joinData
       @socket.emit 'get state'
 
-      @socket.on 'new player', (newPlayerData) ->
-        console.log newPlayerData
-
-      @socket.on 'remove player', (removePlayerData) ->
-        console.log removePlayerData
-
-      @socket.on 'update player', (updatePlayerData) ->
-        console.log updatePlayerData
-
     setTimeout setupCallback, 0
+
+  handleNewPlayer: (newPlayerData) =>
+    if @players[newPlayerData.slot]?
+      console.error "can not add player: player with slot #{newPlayerData.slot} already exists"
+      return
+
+    @players[newPlayerData.slot] = new RemotePlayer @, newPlayerData.slot, newPlayerData.team, newPlayerData.callsign, newPlayerData.tag, { name: "Player: #{newPlayerData.slot}" }
+    @worldLayer.addNode @players[newPlayerData.slot]
+
+  handleRemovePlayer: (removePlayerData) =>
+    if not @players[removePlayerData.slot]?
+      console.error "can not remove player: player with slot #{newPlayerData.slot} does not exist"
+      return
+
+    @worldLayer.removeNode @players[removePlayerData.slot]
+    @players[removePlayerData.slot] = null
 
   update: (elapsedMS) ->
     # TODO move this to setupCallback

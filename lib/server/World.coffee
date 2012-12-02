@@ -64,57 +64,61 @@ class World
     @io.sockets.removeListener('connection', @handleNewConnection)
 
   handleNewConnection: (socket) =>
-    # tell the client our protocol version
-    socket.emit 'protocol', Protocol.VERSION
+    if @players[socket.id]?
+      console.error "can not add player: player with slot #{socket.id} already exists"
+      socket.disconnect 'can not add you: you already exist on the server'
+      return
 
-    self = @
+    socket.once 'disconnect', (reason) =>
+      if not @players[socket.id]?
+        console.error "can not remove player: player with slot #{socket.id} does not exist"
+        socket.disconnect 'can not remove you: you do not exist on the server'
+        return
 
-    socket.once 'join', (joinData) ->
+      # tell everyone this player has disconnected
+      socket.broadcast.emit 'remove player', Player.MessageRemovePlayer(@players[socket.id])
+
+      # now remove
+      socket.removeAllListeners()
+      @players[socket.id] = null
+      delete @players[socket.id]
+
+    socket.once 'join', (joinData) =>
       # create the representative player object
       # TODO sanitize the incoming information, check for duplicate callsign, etc
-      player = new Player self, socket, socket.id, joinData.team, joinData.callsign, joinData.tag
+      player = new Player @, socket, socket.id, joinData.team, joinData.callsign, joinData.tag
 
       # use the socket id to store our player by
-      self.players[socket.id] = player
+      @players[socket.id] = player
 
       # tell the player they've been joined
       # we can use this to "massage" the data they gave us and change it
       socket.emit 'self join', Player.MessageNewPlayer(player)
 
-    socket.once 'get state', ->
-      return unless self.players[socket.id]?
+      # tell everyone else about this new player
+      socket.broadcast.emit 'new player', Player.MessageNewPlayer(@players[socket.id])
+
+      # immediate spawn this player at 0,0 with 0 rotation
+      # TODO should be random, have a timer, respect state, etc
+      @players[socket.id].spawn([0,0], 0)
+
+    socket.once 'get state', =>
+      return unless @players[socket.id]?
 
       # TODO: Give this new player state. Includes the map, variables, and all other players.
 
       # give the map to the player
-      socket.emit 'map', self.map
+      socket.emit 'map', @map
 
-      # tell everyone else about this new player
-      socket.broadcast.emit 'new player', Player.MessageNewPlayer(self.players[socket.id])
+      # tell this new player about all existing players
+      for slot, player of @players
+        # doesn't make sense to tell them about themselves
+        continue if slot is socket.id
 
-      # immediate spawn this player at 0,0 with 0 rotation
-      # TODO should be random, have a timer, respect state, etc
-      self.players[socket.id].spawn([0,0], 0)
+        socket.emit 'new player', Player.MessageNewPlayer(player)
+        socket.emit 'update player', Player.MessageUpdatePlayer(player)
 
-  handlePlayerJoin: (joinData) ->
-    # create the representative player object
-    # TODO sanitize the incoming information, check for duplicate callsign, etc
-    player = new Player @, socket, socket.id, joinData.team, joinData.callsign, joinData.tag
-
-    # use the socket id to store our player by
-    @players[socket.id] = player
-
-    # tell the player they've been joined
-    # we can use this to "massage" the data they gave us and change it
-    socket.emit 'self join', Player.MessageNewPlayer(player)
-
-  handleStateRequest: (socket) ->
-    # TODO: Give this new player state. Includes the map, variables, and all other players.
-
-    # give the map to the player
-    socket.emit 'map', @map
-
-    # tell everyone else about this new player
-    socket.broadcast.emit 'new player', Player.MessageNewPlayer(player)
+    # now start it all off, tell the client our protocol version
+    socket.emit 'protocol', Protocol.VERSION
 
 module.exports = World
