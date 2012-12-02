@@ -26,10 +26,10 @@ class World extends pulse.Sprite
 
       @parent.parent.addLayer @worldLayer
 
-      @socket.once 'self join', =>
+      @socket.once 'self join', (joinData) =>
         # create the local player now
         # TODO technically we shouldn't be spawning now
-        @localPlayer = new LocalPlayer @, { name: 'Local Player' }
+        @localPlayer = new LocalPlayer @, joinData.slot, joinData.team, joinData.callsign, joinData.tag, { name: 'Local Player' }
         @worldLayer.addNode @localPlayer
 
       # we need to let client do its things before we can emit these events, thus the timeout callback

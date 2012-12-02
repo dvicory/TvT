@@ -2,12 +2,17 @@ CommonPlayer = require('../common/Player')
 DynamicSprite = require('./DynamicSprite')
 
 class LocalPlayer extends DynamicSprite
-  constructor: (@world, args) ->
+  constructor: (@world, slot, team, callsign, tag, args) ->
     args ?= {}
 
-    args.src = 'img/textures/custom/tank_rogue.png'
+    args.src = "img/textures/custom/tank_#{team.toLowerCase()}.png"
 
     super @world, CommonPlayer, args
+
+    @model.slot = slot
+    @model.team = team
+    @model.callsign = callsign
+    @model.tag = tag
 
     @model.size = [124, 153]
     @model.maxVelocity = 150
