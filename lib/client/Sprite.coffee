@@ -17,8 +17,8 @@ class Sprite extends pulse.Sprite
 
     Object.defineProperty @, 'position',
       get: ->
-        x: @model.position[0]
-        y: @model.position[1]
+        x: (@model.position[0] + (@model.position[0] > 0 ? 0.5 : -0.5)) << 0
+        y: (@model.position[1] + (@model.position[1] > 0 ? 0.5 : -0.5)) << 0
 
     Object.defineProperty @, 'size',
       get: ->
