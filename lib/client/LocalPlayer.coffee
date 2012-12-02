@@ -12,8 +12,8 @@ class LocalPlayer extends DynamicSprite
     @model.maxVelocity = 150
     @model.maxAngularVelocity = Math.PI / 4
 
-    @events.bind 'keydown', @handleKeyDown
-    @events.bind 'keyup', @handleKeyUp
+    @events.on 'keydown', @handleKeyDown
+    @events.on 'keyup', @handleKeyUp
 
   handleKeyDown: (e) =>
     if e.key is 'W' # move forwards
