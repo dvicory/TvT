@@ -1,6 +1,7 @@
 Camera = require('./Camera')
 LocalPlayer = require('./LocalPlayer')
 RemotePlayer = require('./RemotePlayer')
+Box = require('./Box')
 
 class World extends pulse.Sprite
   constructor: (args) ->
@@ -25,6 +26,9 @@ class World extends pulse.Sprite
     # need something to hold all the players
     @players = {}
 
+    # also need something for all the map objects
+    @mapObjects = []
+
     # we need a setup callback because certain things aren't ready to use in the constructor
     setupCallback = =>
       @worldLayer = new pulse.Layer
@@ -40,6 +44,8 @@ class World extends pulse.Sprite
         @localPlayer = new LocalPlayer @, joinData.slot, joinData.team, joinData.callsign, joinData.tag, { name: 'Local Player' }
         @worldLayer.addNode @localPlayer
 
+      @socket.once 'map', @handleMap
+
       # bind relevant events that world takes care of
       @socket.on 'new player', @handleNewPlayer
       @socket.on 'remove player', @handleRemovePlayer
@@ -49,6 +55,15 @@ class World extends pulse.Sprite
       @socket.emit 'get state'
 
     setTimeout setupCallback, 0
+
+  handleMap: (mapObjects) =>
+    i = 0
+    for mapObject in mapObjects
+      sprite = new Box @, mapObject.position, mapObject.size, mapObject.rotation, { name: "Box #{i}" }
+
+      @mapObjects.push sprite
+      @worldLayer.addNode sprite
+      i++
 
   handleNewPlayer: (newPlayerData) =>
     if @players[newPlayerData.slot]?
