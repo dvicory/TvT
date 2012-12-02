@@ -21,6 +21,8 @@ class LocalPlayer extends DynamicSprite
     @events.on 'keydown', @handleKeyDown
     @events.on 'keyup', @handleKeyUp
 
+    @lastUpdate = Date.now()
+
   handleKeyDown: (e) =>
     if e.key is 'W' # move forwards
       @model.velocityFactor = -1
@@ -50,6 +52,17 @@ class LocalPlayer extends DynamicSprite
 
   update: (elapsedMS) ->
     super elapsedMS
+
+    # send an update message every 20ms
+    if (Date.now() + 20) > @lastUpdate
+      @world.socket.emit 'update player', LocalPlayer.MessageUpdatePlayer(@model)
+
+      @lastUpdate = Date.now()
+
     @world.camera.lookAt(@position) if @world.camera?
+
+  @MessageUpdatePlayer: (player) ->
+    position : player.position
+    rotation : player.rotation
 
 module.exports = LocalPlayer
