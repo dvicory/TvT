@@ -1,1 +1,1 @@
-exports.VERSION = 1
+exports.VERSION = 2
