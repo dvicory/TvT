@@ -6,13 +6,14 @@ StaticSprite = require('./StaticSprite')
 # @copyright BZFX
 # @author Daniel Vicory
 class DynamicSprite extends StaticSprite
-  constructor: (@world, args) ->
+  constructor: (@world, worldModel, args) ->
+    worldModel ?= DynamicWorldObject
+
     # call parent constructor, we'll get access to our parent's members now
-    super @world, args
+    super @world, worldModel, args
 
-    # TODO remove repeating ourselves (also similar in StaticSprite)
-    @model = new DynamicWorldObject
-
-    return
+  update: (elapsedMS) ->
+    @model.update elapsedMS
+    super elapsedMS
 
 module.exports = DynamicSprite

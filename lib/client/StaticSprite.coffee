@@ -1,42 +1,15 @@
 StaticWorldObject = require('../common/StaticWorldObject')
+Sprite = require('./Sprite')
 
-# StaticSprite, a root class of all visuals in TvT.
+# StaticSprite, a sprite for visuals that are static in-world.
 #
 # @copyright BZFX
 # @author Daniel Vicory
-class StaticSprite extends pulse.Sprite
-  constructor: (@world, args) ->
-    throw TypeError('world is a required argument of sprite') unless @world instanceof require('./World')
+class StaticSprite extends Sprite
+  constructor: (@world, worldModel, args) ->
+    worldModel ?= StaticWorldObject
 
     # call parent constructor, we'll get access to our parent's members now
-    super args
-
-    @model = new StaticWorldObject
-
-    # force sprite to be redrawn if window resizes
-    # fixes bug of sprites not drawing unless moved after resize
-    $(window).resize =>
-      @updated = true
-
-  update: (elapsedMS) ->
-    @model.update elapsedMS
-
-    @position =
-      x: @model.position[0]
-      y: @model.position[1]
-
-    @size =
-      width: @model.size[0]
-      height: @model.size[1]
-
-    @rotation = @model.rotation * (180 / Math.PI)
-
-    super elapsedMS
-
-  draw: (ctx) ->
-    if @world.camera?
-      super ctx, @world.camera.transformView
-    else
-      super ctx
+    super @world, worldModel, args
 
 module.exports = StaticSprite

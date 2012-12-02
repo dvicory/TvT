@@ -1,3 +1,4 @@
+CommonPlayer = require('../common/Player')
 DynamicSprite = require('./DynamicSprite')
 
 class LocalPlayer extends DynamicSprite
@@ -6,7 +7,7 @@ class LocalPlayer extends DynamicSprite
 
     args.src = 'img/textures/custom/tank_rogue.png'
 
-    super @world, args
+    super @world, CommonPlayer, args
 
     @model.size = [124, 153]
     @model.maxVelocity = 150
