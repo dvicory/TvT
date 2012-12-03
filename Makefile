@@ -2,16 +2,32 @@ COFFEEC=coffee -cp
 BROWSERIFYC=browserify
 
 COMMON_LIB = \
-	lib/common/EventEmitter.js
+	lib/common/EventEmitter.js \
+	lib/common/WorldObject.js \
+	lib/common/StaticWorldObject.js \
+	lib/common/DynamicWorldObject.js \
+	lib/common/Projection.js \
+	lib/common/Rectangle.js \
+	lib/common/RotatedRectangle.js \
+	lib/common/World.js \
+	lib/common/Player.js
 
 SERVER_LIB = \
+	lib/server/Protocol.js \
+	lib/server/World.js \
+	lib/server/Player.js \
 	lib/server/Server.js
 
 CLIENT_LIB = \
+	lib/client/Protocol.js \
 	lib/client/Camera.js \
 	lib/client/Sprite.js \
+	lib/client/StaticSprite.js \
+	lib/client/DynamicSprite.js \
+	lib/client/Box.js \
 	lib/client/World.js \
-	lib/client/Player.js \
+	lib/client/LocalPlayer.js \
+	lib/client/RemotePlayer.js \
 	lib/client/Client.js
 
 all: common server client

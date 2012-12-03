@@ -23,7 +23,7 @@
   "contributors": [
     "Daniel Vicory <dvicory@gmail.com> (http://bzfx.net/)",
     "Jason Berry <bloodlustr@gmail.com>",
-    "Pete Cruz",
+    "Pete Cruz <Petesta@live.com>",
     "Jerry Medina <jerryfoxYT@gmail.com>"
   ],
   "dependencies" : {
@@ -31,6 +31,7 @@
     "coffee-script": "1.3.x",
     "connect": "2.6.x",
     "eventemitter2": "0.4.x",
+    "optimist": "0.3.x",
     "socket.io": "0.9.x"
   },
   "devDependencies" :

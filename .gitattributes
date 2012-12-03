@@ -1,0 +1,14 @@
+# Set default behaviour, in case users don't have core.autocrlf set.
+* text=auto
+
+# Explicitly declare text files we want to always be normalized and converted 
+# to native line endings on checkout.
+*.coffee text
+
+# Explicitly declare text files we want to always be converted to LF line endings. 
+*.sh eol=lf
+
+# Denote all files that are truly binary and should not be modified.
+*.ai binary
+*.png binary
+*.jpg binary

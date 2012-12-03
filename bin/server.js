@@ -1,10 +1,19 @@
 #!/usr/bin/env node
 
-var Server = require('../lib/server/Server')
+var optimist = require('optimist')
+  .usage('Usage: ' + process.argv[1] + ' -p [port]')
+  .options({
+    port : {
+      alias : 'p',
+      default : 3000
+    },
+    world : {
+      alias : 'w',
+      demand : true
+    }
+  })
+;
 
-var port = 3000;
+var Server = require('../lib/server/Server');
 
-if (typeof process.argv[2] !== 'undefined')
-	port = process.argv[2];
-
-server = new Server('dist', port);
+var server = new Server(optimist.argv, __dirname + '/../dist');
