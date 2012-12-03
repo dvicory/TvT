@@ -6,16 +6,24 @@ World = require('./World')
 pulse.EventManager = EventEmitter
 
 pulse.ready ->
-  asset = new pulse.Texture('/img/textures/other/grass.png')
-  assetBundle = new pulse.AssetBundle
+  manifest =
+    tank_blue: 'img/textures/custom/tank_blue.png'
+    tank_green: 'img/textures/custom/tank_green.png'
+    tank_hunter: 'img/textures/custom/tank_hunter.png'
+    tank_purple: 'img/textures/custom/tank_purple.png'
+    tank_rabbit: 'img/textures/custom/tank_rabbit.png'
+    tank_red: 'img/textures/custom/tank_red.png'
+    tank_rogue: 'img/textures/custom/tank_rogue.png'
+    tank_white: 'img/textures/custom/tank_white.png'
+    grass: 'img/textures/other/grass.png'
+
   assetManager = new pulse.AssetManager
 
-  assetBundle.addAsset(asset)
+  for name, filename of manifest
+    assetManager.addAsset(new pulse.Texture(name: name, filename: filename))
+
   #assetManager.addBundle(assetBundle, 'mainAssets')
-  #assetManager.addAsset(asset)
-  console.log('outside function')
   assetManager.events.on 'complete', ->
-    console.log('within anonymous function')
 
     engine = new pulse.Engine
       gameWindow: 'gameWindow'
@@ -85,7 +93,7 @@ pulse.ready ->
         tag: 'some tag'
 
       # instantiate world
-      world = new World name: 'World', socket: socket, joinData: joinData
+      world = new World name: 'World', socket: socket, joinData: joinData, assetManager: assetManager
       layer.addNode world
 
     # we disconnected
@@ -96,4 +104,3 @@ pulse.ready ->
         delete world
 
       return
-  assetManager.addBundle(assetBundle, 'mainAssets')
