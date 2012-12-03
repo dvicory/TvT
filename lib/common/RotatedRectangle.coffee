@@ -18,27 +18,27 @@ class RotatedRectangle extends Rectangle
 
     Object.defineProperty @, 'upperLeft',
       get: ->
-        upperLeft = glmatrix.vec2.create(@left, @top)
-        origin = @origin
-        @rotatePoint(upperLeft, glmatrix.vec2.add(origin, upperLeft), @rotation)
+        point  = [@left, @top]
+        origin = [point[0] + @origin[0], point[1] + @origin[1]]
+        @rotatePoint(point, origin, @rotation)
 
     Object.defineProperty @, 'upperRight',
       get: ->
-        upperRight = glmatrix.vec2.create(@right, @top)
-        origin = [-@origin[0], @origin[1]]
-        @rotatePoint(upperRight, glmatrix.vec2.add(origin, upperRight), @rotation)
+        point  = [@right, @top]
+        origin = [point[0] - @origin[0], point[1] + @origin[1]]
+        @rotatePoint(point, origin, @rotation)
 
     Object.defineProperty @, 'lowerLeft',
       get: ->
-        lowerLeft = glmatrix.vec2.create(@left, @bottom)
-        origin = [@origin[0], -@origin[1]]
-        @rotatePoint(lowerLeft, glmatrix.vec2.add(origin, lowerLeft), @rotation)
+        point  = [@left, @bottom]
+        origin = [point[0] + @origin[0], point[1] - @origin[1]]
+        @rotatePoint(point, origin, @rotation)
 
     Object.defineProperty @, 'lowerRight',
       get: ->
-        lowerRight = glmatrix.vec2.create(@right, @bottom)
-        origin = [-@origin[0], -@origin[1]]
-        @rotatePoint(lowerRight, glmatrix.vec2.add(origin, lowerRight), @rotation)
+        point  = [@right, @bottom]
+        origin = [point[0] - @origin[0], point[1] - @origin[1]]
+        @rotatePoint(point, origin, @rotation)
 
     Object.defineProperty @, 'vertices',
       get: ->
