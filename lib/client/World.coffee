@@ -92,16 +92,16 @@ class World extends pulse.Sprite
       # resize and redraw offscreen canvas if window resizes
       $(window).resize @setupOffscreenBackground
 
-    # we need the local player's position to see where to do the tile
-    if @localPlayer?
-      @position = @localPlayer.position
-
     super elapsedMS
 
   draw: (ctx) ->
     # we obviously haven't finished loading the texture yet...
     if @texture.percentLoaded isnt 100 or @size.width is 0 or @size.height is 0
       return
+
+    # we need the local player's position to see where to do the tile
+    if @localPlayer?
+      @position = @localPlayer.position
 
     # to draw the grass texture, we use an offscreen canvas
     # make sure it exists...
