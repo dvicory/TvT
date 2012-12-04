@@ -10,6 +10,7 @@ class StaticWorldObject extends WorldObject
 
     @position  = glmatrix.vec2.create() unless @position instanceof Array and @position.length is 2
     @size      = glmatrix.vec2.create() unless @size     instanceof Array and @size.length     is 2
-    @rotation ?= 0
+
+    @rotation  = 0 unless typeof @rotation is 'number'
 
 module.exports = StaticWorldObject
