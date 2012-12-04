@@ -3,9 +3,8 @@ DynamicSprite = require('./DynamicSprite')
 
 class LocalPlayer extends DynamicSprite
   constructor: (@world, slot, team, callsign, tag, args) ->
-    args ?= {}
-
-    args.src = "img/textures/custom/tank_#{team.toLowerCase()}.png"
+    args     ?= {}
+    args.src ?= @world.assetManager.getAsset("tank_#{team.toLowerCase()}")
 
     super @world, CommonPlayer, args
 

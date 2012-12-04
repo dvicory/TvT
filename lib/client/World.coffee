@@ -5,15 +5,15 @@ Box = require('./Box')
 
 class World extends pulse.Sprite
   constructor: (args) ->
-    args ?= {}
-    args.src = 'img/textures/other/grass.png'
-
     throw new TypeError('assetManager is a required key in args and must be a pulse.AssetManager') unless args.assetManager instanceof pulse.AssetManager
     throw new TypeError('socket is a required key in args and must be a socket.io socket')         unless args.socket       instanceof io.SocketNamespace
     throw new TypeError('joinData is a required key in args and must be an object')                unless args.joinData     instanceof Object
 
     @socket = args.socket
     @assetManager = args.assetManager
+
+    args     ?= {}
+    args.src ?= @assetManager.getAsset('grass')
 
     # call parent constructor, we'll get access to Sprite's members now
     super args
