@@ -1,19 +1,9 @@
-CommonPlayer = require('../common/Player')
-DynamicSprite = require('./DynamicSprite')
+Player = require('./Player')
 
-class LocalPlayer extends DynamicSprite
+class LocalPlayer extends Player
   constructor: (@world, slot, team, callsign, tag, args) ->
-    args     ?= {}
-    args.src ?= @world.assetManager.getAsset("tank_#{team.toLowerCase()}")
+    super @world, slot, team, callsign, tag, args
 
-    super @world, CommonPlayer, args
-
-    @model.slot = slot
-    @model.team = team
-    @model.callsign = callsign
-    @model.tag = tag
-
-    @model.size = [9.72, 12]
     @model.maxVelocity = 25
     @model.maxAngularVelocity = Math.PI / 2
 
@@ -85,14 +75,10 @@ class LocalPlayer extends DynamicSprite
 
     # send an update message every 20ms
     if (Date.now() + 20) > @lastUpdate
-      @world.socket.emit 'update player', LocalPlayer.MessageUpdatePlayer(@model)
+      @world.socket.emit 'update player', Player.MessageUpdatePlayer(@model)
 
       @lastUpdate = Date.now()
 
     @world.camera.lookAt(@position) if @world.camera?
-
-  @MessageUpdatePlayer: (player) ->
-    position : player.position
-    rotation : player.rotation
 
 module.exports = LocalPlayer

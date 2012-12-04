@@ -1,19 +1,8 @@
-CommonPlayer = require('../common/Player')
-StaticSprite = require('./StaticSprite')
+Player = require('./Player')
 
-class RemotePlayer extends StaticSprite
+class RemotePlayer extends Player
   constructor: (@world, slot, team, callsign, tag, args) ->
-    args     ?= {}
-    args.src ?= @world.assetManager.getAsset("tank_#{team.toLowerCase()}")
-
-    super @world, CommonPlayer, args
-
-    @model.slot = slot
-    @model.team = team
-    @model.callsign = callsign
-    @model.tag = tag
-
-    @model.size = [9.72, 12]
+    super @world, slot, team, callsign, tag, args
 
     @world.socket.on 'update player', @handleUpdatePlayer
     @world.socket.on 'remove player', @handleRemovePlayer
@@ -29,9 +18,5 @@ class RemotePlayer extends StaticSprite
 
     @world.socket.removeListener 'update player', @handleUpdatePlayer
     @world.socket.removeListener 'remove player', @handleRemovePlayer
-
-  @MessageUpdatePlayer: (player) ->
-    position : player.position
-    rotation : player.rotation
 
 module.exports = RemotePlayer
