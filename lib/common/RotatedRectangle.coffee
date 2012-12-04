@@ -69,13 +69,15 @@ class RotatedRectangle extends Rectangle
       # required for accurate projections
       glmatrix.vec2.normalize(axis)
 
-      if not o = @isAxisCollision(rectangle, axis)
+      out = @isAxisCollision(rectangle, axis)
+
+      if !out
         # if there is no axis collision, we can guarantee they do not overlap
         return false
 
       # do we have the smallest overlap yet?
-      if o < bestOverlap
-        bestOverlap = o
+      if out < bestOverlap
+        bestOverlap = out
         bestCollisionProjection = axis
 
     # it is now guaranteed that the rectangles intersect for us to have gotten this far
@@ -122,7 +124,7 @@ class RotatedRectangle extends Rectangle
   project: (axis) ->
     vertices = @vertices
 
-    min = glmatrix.vec2.dot(axis, vertices.shift())
+    min = glmatrix.vec2.dot(axis, vertices[0])
     max = min
 
     for vertex in vertices
@@ -136,13 +138,14 @@ class RotatedRectangle extends Rectangle
     return new Projection(min, max)
 
   rotatePoint: (point, origin, rotation) ->
-    # see http://stackoverflow.com/questions/620745/c-rotating-a-vector-around-a-certain-point/705474#705474
-    # x = ((x - x_origin) * cos(angle)) - ((y_origin - y) * sin(angle)) + x_origin
-    # y = ((y_origin - y) * cos(angle)) - ((x - x_origin) * sin(angle)) + y_origin
-    # TODO glmatrix 2.0-dev may allow native transformations on vec2
-    point[0] = ((point[0] - origin[0]) * Math.cos(rotation)) - ((origin[1] - point[1]) * Math.sin(rotation)) + origin[0]
-    point[1] = ((origin[1] - point[1]) * Math.cos(rotation)) - ((point[0] - origin[0]) * Math.sin(rotation)) + origin[1]
+    ret = [0, 0]
 
-    return point
+    c = Math.cos(rotation)
+    s = Math.sin(rotation)
+
+    ret[0] = (point[0] - origin[0]) * c - (point[1] - origin[1]) * s + origin[0]
+    ret[1] = (point[1] - origin[1]) * c + (point[0] - origin[0]) * s + origin[1]
+
+    return ret
 
 module.exports = RotatedRectangle
