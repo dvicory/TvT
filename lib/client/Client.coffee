@@ -94,6 +94,9 @@ pulse.ready ->
       world = new World name: 'World', socket: socket, joinData: joinData, assetManager: assetManager
       layer.addNode world
 
+      # fade in the game window
+      $('#gameWindow').addClass('fadeIn').show()
+
     # we disconnected
     socket.on 'disconnect', ->
       # TODO handle disconnections better

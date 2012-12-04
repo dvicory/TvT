@@ -46,6 +46,8 @@ class World extends pulse.Sprite
         @localPlayer = new LocalPlayer @, joinData.slot, joinData.team, joinData.callsign, joinData.tag, { name: 'Local Player' }
         @worldLayer.addNode @localPlayer
 
+        $('#hud #playerScore').text("#{@localPlayer.model.callsign}: #{@localPlayer.model.score}")
+
       @socket.once 'map', @handleMap
 
       # bind relevant events that world takes care of
