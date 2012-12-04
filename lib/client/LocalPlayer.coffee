@@ -22,6 +22,7 @@ class LocalPlayer extends DynamicSprite
     @events.on 'keyup', @handleKeyUp
 
     @lastUpdate = Date.now()
+    @insideMapObject = false
 
   handleKeyDown: (e) =>
     if e.key is 'W' # move forwards
@@ -32,6 +33,14 @@ class LocalPlayer extends DynamicSprite
       @model.angularVelocityFactor = -1
     if e.key is 'D' # rotate right
       @model.angularVelocityFactor = 1
+
+    # being inside a map object slows you down
+    # TODO make this configurable
+    if @insideMapObject
+      @model.velocityFactor = -0.5        if e.key is 'W'
+      @model.velocityFactor =  0.5        if e.key is 'S'
+      @model.angularVelocityFactor = -0.5 if e.key is 'A'
+      @model.angularVelocityFactor =  0.5 if e.key is 'D'
 
     if @model.velocityFactor isnt 0
       @model.updateVelocity()
@@ -52,6 +61,28 @@ class LocalPlayer extends DynamicSprite
 
   update: (elapsedMS) ->
     super elapsedMS
+
+    # being inside a map object slows you down
+    # TODO make this configurable
+    @insideMapObject = false
+    for mapObject in @world.mapObjects
+      if mapObject.inCurrentBounds(@position.x, @position.y)
+        # we're inside a map object, so we can break out now
+        @insideMapObject = true
+        break
+
+    # if we're inside one, we need to slow ourselves down accordingly
+    if @insideMapObject
+      @model.velocityFactor = -0.5        if @model.velocityFactor is -1
+      @model.velocityFactor =  0.5        if @model.velocityFactor is  1
+      @model.angularVelocityFactor = -0.5 if @model.angularVelocityFactor is -1
+      @model.angularVelocityFactor =  0.5 if @model.angularVelocityFactor is  1
+    # else if we're slowed down we should speed ourselves back up
+    else
+      @model.velocityFactor = -1        if @model.velocityFactor is -0.5
+      @model.velocityFactor =  1        if @model.velocityFactor is  0.5
+      @model.angularVelocityFactor = -1 if @model.angularVelocityFactor is -0.5
+      @model.angularVelocityFactor =  1 if @model.angularVelocityFactor is  0.5
 
     # send an update message every 20ms
     if (Date.now() + 20) > @lastUpdate
