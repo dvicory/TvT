@@ -10,8 +10,8 @@ class RemotePlayer extends Player
   handleUpdatePlayer: (updatePlayerData) =>
     return unless updatePlayerData.slot is @model.slot
 
-    @model.position = updatePlayerData.position
-    @model.rotation = updatePlayerData.rotation
+    for key, val of updatePlayerData
+      @model[key] = val if @model[key]?
 
   handleRemovePlayer: (removePlayerData) =>
     return unless removePlayerData.slot is @model.slot

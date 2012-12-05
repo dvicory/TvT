@@ -23,8 +23,18 @@ class Player extends DynamicSprite
     @model.wins   = updateScoreData.wins
     @model.losses = updateScoreData.losses
 
-  @MessageUpdatePlayer: (player) ->
-    position : player.position
-    rotation : player.rotation
+  @MessageUpdatePlayer: (player, includeVelocity, includeAngularVelocity) ->
+    includeVelocity        ?= true
+    includeAngularVelocity ?= true
+
+    ret = {}
+
+    ret.position = player.position
+    ret.rotation = player.rotation
+
+    ret.velocityFactor        = player.velocityFactor        if includeVelocity
+    ret.angularVelocityFactor = player.angularVelocityFactor if includeAngularVelocity
+
+    return ret
 
 module.exports = Player

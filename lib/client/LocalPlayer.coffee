@@ -8,9 +8,14 @@ class LocalPlayer extends Player
     @events.on 'keyup', @handleKeyUp
 
     @lastUpdate = Date.now()
+    @lastUpdateDetails = {}
+
     @insideMapObject = false
 
   handleKeyDown: (e) =>
+    lastVelocityFactor = @model.velocityFactor
+    lastAngularVelocityFactor = @model.angularVelocityFactor
+
     if e.key is 'W' # move forwards
       @model.velocityFactor = -1
     if e.key is 'S' # move backwards
@@ -28,15 +33,23 @@ class LocalPlayer extends Player
       @model.angularVelocityFactor = -0.5 if e.key is 'A'
       @model.angularVelocityFactor =  0.5 if e.key is 'D'
 
+    # immediate send a player update since we began moving
+    @sendPlayerUpdate(lastVelocityFactor isnt @model.velocityFactor, lastAngularVelocityFactor isnt @model.angularVelocityFactor)
 
     return
 
   handleKeyUp: (e) =>
+    lastVelocityFactor = @model.velocityFactor
+    lastAngularVelocityFactor = @model.angularVelocityFactor
+
     if e.key is 'W' or e.key is 'S' # stop going forwards or backwards 
       @model.velocityFactor = 0
 
     if e.key is 'A' or e.key is 'D' # stop rotating 
       @model.angularVelocityFactor = 0
+
+    # immediately send an update since we stopped moving
+    @sendPlayerUpdate(lastVelocityFactor isnt @model.velocityFactor, lastAngularVelocityFactor isnt @model.angularVelocityFactor)
 
     return
 
@@ -65,12 +78,29 @@ class LocalPlayer extends Player
       @model.angularVelocityFactor = -1 if @model.angularVelocityFactor is -0.5
       @model.angularVelocityFactor =  1 if @model.angularVelocityFactor is  0.5
 
-    # send an update message every 20ms
-    if (Date.now() + 20) > @lastUpdate
-      @world.socket.emit 'update player', Player.MessageUpdatePlayer(@model)
+    lastVelocityFactor        = @lastUpdateDetails.velocityFactor
+    lastAngularVelocityFactor = @lastUpdateDetails.angularVelocityFactor
 
-      @lastUpdate = Date.now()
+    # has our velocity factors changed?
+    if lastVelocityFactor isnt @model.velocityFactor
+      sendVelocityFactor = true
+    if lastAngularVelocityFactor isnt @model.angularVelocityFactor
+      sendAngularVelocityFactor = true
+
+    # if so, we should immediately send an update
+    if sendVelocityFactor or sendAngularVelocityFactor
+      @sendPlayerUpdate(sendVelocityFactor, sendAngularVelocityFactor)
+
+    # we'll send an update no later than every 50ms
+    if (@lastUpdate + 50) <= Date.now()
+      @sendPlayerUpdate(true, true)
 
     @world.camera.lookAt(@position) if @world.camera?
+
+  sendPlayerUpdate: (includeVelocity, includeAngularVelocity) ->
+    @lastUpdateDetails = Player.MessageUpdatePlayer(@model, includeVelocity, includeAngularVelocity)
+    @world.socket.emit 'update player', @lastUpdateDetails
+
+    @lastUpdate = Date.now()
 
 module.exports = LocalPlayer
