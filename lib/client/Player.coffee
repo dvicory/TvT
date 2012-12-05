@@ -8,12 +8,14 @@ class Player extends DynamicSprite
 
     super @world, CommonPlayer, args
 
+    @model.size = [9.72, 12]
+    @model.maxVelocity = 25
+    @model.maxAngularVelocity = Math.PI / 2
+
     @model.slot = slot
     @model.team = team
     @model.callsign = callsign
     @model.tag = tag
-
-    @model.size = [9.72, 12]
 
     @world.socket.on 'update score', @handleScoreUpdate
 

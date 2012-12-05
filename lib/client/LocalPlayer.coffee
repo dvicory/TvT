@@ -4,9 +4,6 @@ class LocalPlayer extends Player
   constructor: (@world, slot, team, callsign, tag, args) ->
     super @world, slot, team, callsign, tag, args
 
-    @model.maxVelocity = 25
-    @model.maxAngularVelocity = Math.PI / 2
-
     @events.on 'keydown', @handleKeyDown
     @events.on 'keyup', @handleKeyUp
 
