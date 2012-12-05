@@ -29,7 +29,8 @@ class Player extends CommonPlayer
 
   handlePlayerUpdate: (updateData) =>
     if not updateData.position instanceof Array or updateData.position.length isnt 2 or not updateData.rotation?
-      throw new TypeError("received malformed player update: #{updateData}")
+      console.error 'received malformed player update', updateData
+      return
 
     @position = updateData.position
     @rotation = updateData.rotation
