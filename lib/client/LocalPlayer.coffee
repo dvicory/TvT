@@ -31,11 +31,6 @@ class LocalPlayer extends Player
       @model.angularVelocityFactor = -0.5 if e.key is 'A'
       @model.angularVelocityFactor =  0.5 if e.key is 'D'
 
-    if @model.velocityFactor isnt 0
-      @model.updateVelocity()
-
-    if @model.angularVelocityFactor isnt 0
-      @model.angularVelocity = @model.angularVelocityFactor * @model.maxAngularVelocity
 
     return
 

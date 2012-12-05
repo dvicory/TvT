@@ -23,12 +23,9 @@ class DynamicWorldObject extends StaticWorldObject
     @angularVelocityFactor = angularVelocityFactor
 
   update: (elapsedMS) ->
-    # if a velocity is still being applied, be sure to update its components (in case of changing rotation)
-    if @angularVelocityFactor isnt 0 or @velocityFactor isnt 0
-      @updateVelocity()
-
     # update rotation?
     if @angularVelocityFactor isnt 0
+      @angularVelocity = @maxAngularVelocity * @angularVelocityFactor
       @rotation += @angularVelocity * (elapsedMS / 1000)
 
       # wrap the rotation between -pi and pi
@@ -38,6 +35,10 @@ class DynamicWorldObject extends StaticWorldObject
         @rotation = 2 * Math.PI + @rotation
 
       @emit 'update.rotation', @
+
+    # if a velocity is still being applied, be sure to update its components (in case of changing rotation)
+    if @angularVelocityFactor isnt 0 or @velocityFactor isnt 0
+      @updateVelocity()
 
     # update position?
     if @velocityFactor isnt 0
