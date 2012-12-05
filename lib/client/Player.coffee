@@ -15,8 +15,14 @@ class Player extends DynamicSprite
 
     @model.size = [9.72, 12]
 
+    @world.socket.on 'update score', @handleScoreUpdate
+
+  handleScoreUpdate: (updateScoreData) =>
+    @model.wins   = updateScoreData.wins
+    @model.losses = updateScoreData.losses
+
   @MessageUpdatePlayer: (player) ->
     position : player.position
-    rotation : player.rotation    
+    rotation : player.rotation
 
 module.exports = Player
