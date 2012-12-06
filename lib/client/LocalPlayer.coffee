@@ -34,7 +34,8 @@ class LocalPlayer extends Player
       @model.angularVelocityFactor =  0.5 if e.key is 'D'
 
     # immediate send a player update since we began moving
-    @sendPlayerUpdate(lastVelocityFactor isnt @model.velocityFactor, lastAngularVelocityFactor isnt @model.angularVelocityFactor)
+    if ['W', 'A', 'S', 'D'].indexOf(e.key) isnt -1
+      @sendPlayerUpdate(lastVelocityFactor isnt @model.velocityFactor, lastAngularVelocityFactor isnt @model.angularVelocityFactor)
 
     return
 
@@ -49,7 +50,8 @@ class LocalPlayer extends Player
       @model.angularVelocityFactor = 0
 
     # immediately send an update since we stopped moving
-    @sendPlayerUpdate(lastVelocityFactor isnt @model.velocityFactor, lastAngularVelocityFactor isnt @model.angularVelocityFactor)
+    if ['W', 'A', 'S', 'D'].indexOf(e.key) isnt -1
+      @sendPlayerUpdate(lastVelocityFactor isnt @model.velocityFactor, lastAngularVelocityFactor isnt @model.angularVelocityFactor)
 
     return
 
