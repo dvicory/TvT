@@ -49,4 +49,7 @@ class Shot extends DynamicWorldObject
     # we are no longer moving
     @velocityFactor = 0
 
+    # and we are ended
+    @state = 'ended'
+
 module.exports = Shot

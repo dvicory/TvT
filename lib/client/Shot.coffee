@@ -8,14 +8,24 @@ class Shot extends DynamicSprite
 
     super @world, shotModel, args
 
+  end: ->
+    @model.end()
+    @visible = false
+
   update: (elapsedMS) ->
     super elapsedMS
+
+    return if @model.state is 'ended'
 
     for mapObject in @world.mapObjects
       if mapObject.inCurrentBounds(@position.x, @position.y)
         # we're inside a map object, so we need to end
-        @model.state = 'ended'
-        @visible = false
+        @end()
         break
+
+  @MessageNewShot: (shot) ->
+    shotSlot : shot.slot
+    position : shot.initialPosition
+    rotation : shot.rotation
 
 module.exports = Shot

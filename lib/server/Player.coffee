@@ -8,6 +8,7 @@ class Player extends CommonPlayer
     super slot, team, callsign, tag
 
     @socket.on 'update player', @handlePlayerUpdate
+    @socket.on 'player died', @handlePlayerDied
     @socket.on 'new shot', @handleNewShot
 
   update: (elapsedMS) ->
@@ -52,13 +53,25 @@ class Player extends CommonPlayer
     # broadcast player update to everyone else
     @socket.volatile.broadcast.emit 'update player', Player.MessageUpdatePlayer(@, updateData.velocityFactor?, updateData.angularVelocityFactor?)
 
+  handlePlayerDied: (playerDiedData) =>
+    if typeof playerDiedData.killer isnt 'string'
+      console.error "received malformed player died, bogus #{playerDiedData.killer} killer", playerDiedData
+      return
+
+    if typeof playerDiedData.shotSlot isnt 'number'
+      console.error "received malformed player died, bogus #{playerDiedData.shotSlot} shot slot", playerDiedData
+      return
+
+    # broadcast player death to everyone else
+    @socket.broadcast.emit 'player died', Player.MessagePlayerDied(@, playerDiedData)
+
   handleNewShot: (newShotData) =>
     if not newShotData.position instanceof Array or newShotData.position.length isnt 2
       console.error 'received malformed new shot, bogus position vector', newShotData
       return
 
     if typeof newShotData.rotation isnt 'number'
-      console.error "received malformed new shot, bogus #{newShotData.rotation} rotation", updateData
+      console.error "received malformed new shot, bogus #{newShotData.rotation} rotation", newShotData
       return
 
     # broadcast new shot to everyone else
@@ -72,6 +85,11 @@ class Player extends CommonPlayer
 
   @MessageRemovePlayer: (player) ->
     slot : player.slot
+
+  @MessagePlayerDied: (player, killer) ->
+    slot     : player.slot
+    killer   : killer.killer
+    shotSlot : killer.shotSlot
 
   @MessageUpdatePlayer: (player, includeVelocity, includeAngularVelocity) ->
     includeVelocity        ?= true

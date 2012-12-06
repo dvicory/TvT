@@ -66,10 +66,12 @@ class LocalPlayer extends Player
 
     shot = super
 
-    @world.socket.emit 'new shot', Player.MessageNewShot(shot.model)
+    @world.socket.emit 'new shot', Shot.MessageNewShot(shot.model)
 
-  endShot: (endedShot) ->
-    super endedShot
+  die: (killer, shot) ->
+    super killer, shot
+
+    @world.socket.emit 'player died', Player.MessagePlayerDied(killer.model, shot.model)
 
   update: (elapsedMS) ->
     super elapsedMS
@@ -112,6 +114,20 @@ class LocalPlayer extends Player
     # we'll send an update no later than every 50ms
     if (@lastUpdate + 50) <= Date.now()
       @sendPlayerUpdate(true, true)
+
+    # see if anyone hit us
+    for slot, player of @world.players
+      hit = false
+
+      for shot in player.shots
+        if @inCurrentBounds(shot.position.x, shot.position.y)
+          @die(shot.player, shot)
+          hit = true
+          break
+
+      break if hit
+
+    $('#hud #playerScore').text("#{@model.callsign}: #{@model.score}")
 
     @world.camera.lookAt(@position) if @world.camera?
 

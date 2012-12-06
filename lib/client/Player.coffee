@@ -21,7 +21,14 @@ class Player extends DynamicSprite
 
     @shots = []
 
+    @world.socket.on 'remove player', @handleRemovePlayer
     @world.socket.on 'update score', @handleScoreUpdate
+
+  handleRemovePlayer: (removePlayerData) =>
+    return unless removePlayerData.slot is @model.slot
+
+    @world.socket.removeListener 'remove player', @handleRemovePlayer
+    @world.socket.removeListener 'update score', @handleScoreUpdate
 
   handleScoreUpdate: (updateScoreData) =>
     @model.wins   = updateScoreData.wins
@@ -51,6 +58,8 @@ class Player extends DynamicSprite
     i = 0
     for shot in @shots
       if shot is endedShot
+        shot.end()
+
         @model.endShot(@shots[i].model)
 
         @shots[i] = null
@@ -61,6 +70,10 @@ class Player extends DynamicSprite
         break
 
       i++
+
+  die: (killer, shot) ->
+    # end the killer's shot
+    killer.endShot(shot)
 
   @MessageUpdatePlayer: (player, includeVelocity, includeAngularVelocity) ->
     includeVelocity        ?= true
@@ -76,9 +89,8 @@ class Player extends DynamicSprite
 
     return ret
 
-  @MessageNewShot: (shot) ->
+  @MessagePlayerDied: (killer, shot) ->
+    killer   : killer.slot
     shotSlot : shot.slot
-    position : shot.initialPosition
-    rotation : shot.rotation
 
 module.exports = Player
