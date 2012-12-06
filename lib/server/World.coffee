@@ -144,8 +144,9 @@ class World
         # doesn't make sense to tell them about themselves
         continue if slot is socket.id
 
-        socket.emit 'new player', Player.MessageNewPlayer(player)
+        socket.emit 'new player', Player.MessageNewPlayer(player, true)
         socket.emit 'update player', Player.MessageUpdatePlayer(player)
+        socket.emit 'update score', Player.MessageUpdateScore(player)
 
     # now start it all off, tell the client our protocol version
     socket.emit 'protocol', Protocol.VERSION

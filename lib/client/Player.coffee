@@ -95,7 +95,7 @@ class Player extends DynamicSprite
     @visible = false
 
     # notify score in console
-    text = $("<p><span class=\"#{killer.model.team}\">#{killer.model.callsign}</span> killed <span class=\"#{@model.team}\">#{@model.callsign}</span>.</p>")
+    text = $("<p><span class=\"#{killer.model.team}\">#{killer.model.callsign}</span> killed <span class=\"#{@model.team}\">#{@model.callsign}</span></p>")
     hud = $('#hud #console')
 
     hud.append(text)

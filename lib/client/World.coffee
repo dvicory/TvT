@@ -60,6 +60,33 @@ class World extends pulse.Sprite
 
     setTimeout setupCallback, 0
 
+    @events.on 'keydown', @handleKeyDown
+
+  handleKeyDown: (e) =>
+    return unless e.key is 'P'
+
+    players = []
+
+    if @localPlayer?
+      players.push(@localPlayer)
+
+    for slot, player of @players
+      players.push(player)
+
+    players.sort (a, b) ->
+      b.model.score - a.model.score
+
+    hud = $('#hud #console')
+
+    text = $("<p>Player Scores:</p>")
+    hud.append(text)
+
+    for player in players
+      text = $("<p><span class=\"#{player.model.team}\">#{player.model.callsign}</span>: #{player.model.score}</p>")
+      hud.append(text)
+
+    hud.scrollTop(hud[0].scrollHeight)
+
   handleMap: (mapObjects) =>
     i = 0
     for mapObject in mapObjects
@@ -74,8 +101,17 @@ class World extends pulse.Sprite
       console.error "can not add player: player with slot #{newPlayerData.slot} already exists"
       return
 
-    @players[newPlayerData.slot] = new RemotePlayer @, newPlayerData.slot, newPlayerData.team, newPlayerData.callsign, newPlayerData.tag, { name: "Player: #{newPlayerData.slot}" }
+    remotePlayer = new RemotePlayer @, newPlayerData.slot, newPlayerData.team, newPlayerData.callsign, newPlayerData.tag, { name: "Player: #{newPlayerData.slot}" }
+
+    @players[newPlayerData.slot] = remotePlayer
     @worldLayer.addNode @players[newPlayerData.slot]
+
+    if not newPlayerData.initialState
+      text = $("<p><span class=\"#{remotePlayer.model.team}\">#{remotePlayer.model.callsign}</span> joined the server.</p>")
+      hud = $('#hud #console')
+
+      hud.append(text)
+      hud.scrollTop(hud[0].scrollHeight)
 
   handleRemovePlayer: (removePlayerData) =>
     if not @players[removePlayerData.slot]?

@@ -95,11 +95,17 @@ class Player extends CommonPlayer
     # broadcast new shot to everyone else
     @socket.broadcast.emit 'new shot', Player.MessageNewShot(@, newShotData)
 
-  @MessageNewPlayer: (player) ->
-    slot     : player.slot
-    callsign : player.callsign
-    team     : player.team
-    tag      : player.tag
+  @MessageNewPlayer: (player, initialState) ->
+    ret =
+      slot     : player.slot
+      callsign : player.callsign
+      team     : player.team
+      tag      : player.tag
+
+    if initialState
+      ret.initialState = true
+
+    return ret
 
   @MessageRemovePlayer: (player) ->
     slot : player.slot
