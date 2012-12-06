@@ -36,6 +36,7 @@ class Player extends DynamicSprite
     return unless spawnPlayerData.slot is @model.slot    
 
     @model.spawn(spawnPlayerData.position, spawnPlayerData.rotation)
+    @visible = true
 
   handleScoreUpdate: (updateScoreData) =>
     @model.wins   = updateScoreData.wins
@@ -80,18 +81,16 @@ class Player extends DynamicSprite
 
   die: (killer, shot) ->
     # tell the model we've died, return if the model won't die
-    return if not @model.die(killer.model, shot.model)
+    @model.die(killer.model, shot.model)
+
+    # give the killer a kill
+    killer.model.kill(@model, shot.model)
 
     # end the killer's shot
     killer.endShot(shot)
 
     # we are no longer visible
     @visible = false
-
-  draw: (ctx) ->
-    return unless @model.state is 'alive'
-
-    super ctx
 
   @MessageUpdatePlayer: (player, includeVelocity, includeAngularVelocity) ->
     includeVelocity        ?= true

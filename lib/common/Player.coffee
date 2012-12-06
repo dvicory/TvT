@@ -11,7 +11,8 @@ class Player extends DynamicWorldObject
 
     Object.defineProperty @, 'score',
       enumerable: false
-      value: @wins - @losses
+      get: ->
+        @wins - @losses
 
     Object.defineProperty @, 'state',
       enumerable: false
@@ -47,6 +48,7 @@ class Player extends DynamicWorldObject
 
     # update wins
     @wins++
+    
     @emit 'updated.score', @
 
   shoot: (slot, initialPosition, rotation) ->
