@@ -13,7 +13,11 @@ class Sprite extends pulse.Sprite
 
     worldModel ?= WorldObject
 
-    @model = new worldModel
+    # support allowing model constructors or pre-constructed models
+    if typeof worldModel is 'function'
+      @model = new worldModel
+    else if typeof worldModel is 'object'
+      @model = worldModel
 
     Object.defineProperty @, 'position',
       get: ->
