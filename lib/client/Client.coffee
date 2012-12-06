@@ -136,6 +136,7 @@ pulse.ready ->
     $('#joinMenu form').submit ->
       # start the game
       $('#gameWindow').show()
+      $('#hud').show()
 
       joinData = $(this).serializeJSON()
 

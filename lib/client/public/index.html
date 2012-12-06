@@ -426,6 +426,57 @@
 		top: 44px;
 	}
 
+	#console {
+		display: -webkit-box;
+		display: -moz-box;
+		display: box;
+
+		-webkit-box-orient: vertical;
+		-webkit-box-pack: end;
+		-webkit-box-align: start;
+
+		-moz-box-orient: vertical;
+		-moz-box-pack: end;
+		-moz-box-align: start;
+
+		box-orient: vertical;
+		box-pack: end;
+		box-align: start;
+
+		position: absolute;
+		left: 10px;
+		right: 10px;
+		bottom: 10px;
+		height: 20%;
+		max-height: 200px;
+		overflow: auto;
+
+		background: rgba(0,0,0,0.4);
+		padding: 10px;
+		font: 14px "Courier New", monospace;
+		text-align: left;
+	}
+
+	#console .red {
+		color: red;
+	}
+
+	#console .green {
+		color: green;
+	}
+
+	#console .purple {
+		color: purple;
+	}
+
+	#console .blue {
+		color: blue;
+	}
+
+	#console .pink {
+		color: pink;
+	}
+
 	/* classes to be used from javascript */
 
 	.alignStart {
@@ -498,10 +549,11 @@
 		</div>
 	</div>
 	<div id="gameWindow" style="display:none;">
-		<div id="hud">
-			<div id="playerScore"></div>
-			<div id="position"></div>
-		</div>
+	</div>
+	<div id="hud" style="display:none;">
+		<div id="playerScore"></div>
+		<div id="position"></div>
+		<div id="console"></div>
 	</div>
 </body>
 </html>

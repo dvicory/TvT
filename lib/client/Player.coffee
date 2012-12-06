@@ -94,6 +94,13 @@ class Player extends DynamicSprite
     # we are no longer visible
     @visible = false
 
+    # notify score in console
+    text = $("<p><span class=\"#{killer.model.team}\">#{killer.model.callsign}</span> killed <span class=\"#{@model.team}\">#{@model.callsign}</span>.</p>")
+    hud = $('#hud #console')
+
+    hud.append(text)
+    hud.scrollTop(hud[0].scrollHeight)
+
   @MessageUpdatePlayer: (player, includeVelocity, includeAngularVelocity) ->
     includeVelocity        ?= true
     includeAngularVelocity ?= true
