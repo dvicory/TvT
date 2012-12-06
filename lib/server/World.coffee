@@ -94,7 +94,7 @@ class World
         joinData.team = teams[Math.floor(Math.random() * teams.length)]
 
       # got an invalid team
-      if teams.indexOf(joinData.team) is -1
+      if teams.indexOf(joinData.team) is -1 and joinData.team isnt 'pink'
         socket.removeAllListeners()
 
         console.error "player #{socket.id} tried to join invalid team #{joinData.team}"

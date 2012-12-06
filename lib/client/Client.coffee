@@ -89,6 +89,7 @@ pulse.ready ->
   $('#menus > div').hide()
 
   manifest =
+    tank_pink   : 'img/textures/custom/tank_pink.png'
     tank_blue   : 'img/textures/custom/tank_blue.png'
     tank_green  : 'img/textures/custom/tank_green.png'
     tank_hunter : 'img/textures/custom/tank_hunter.png'
@@ -97,6 +98,7 @@ pulse.ready ->
     tank_red    : 'img/textures/custom/tank_red.png'
     tank_rogue  : 'img/textures/custom/tank_rogue.png'
     tank_white  : 'img/textures/custom/tank_white.png'
+    pink_bolt   : 'img/textures/custom/pink_bolt.png'
     blue_bolt   : 'img/textures/bz/blue_bolt.png'
     green_bolt  : 'img/textures/bz/green_bolt.png'
     purple_bolt : 'img/textures/bz/purple_bolt.png'
