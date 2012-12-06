@@ -118,6 +118,14 @@ class World extends pulse.Sprite
       console.error "can not remove player: player with slot #{newPlayerData.slot} does not exist"
       return
 
+    remotePlayer = @players[removePlayerData.slot]
+
+    text = $("<p><span class=\"#{remotePlayer.model.team}\">#{remotePlayer.model.callsign}</span> left the server.</p>")
+    hud = $('#hud #console')
+
+    hud.append(text)
+    hud.scrollTop(hud[0].scrollHeight)
+
     @worldLayer.removeNode @players[removePlayerData.slot]
     @players[removePlayerData.slot] = null
     delete @players[removePlayerData.slot]
