@@ -97,6 +97,12 @@ pulse.ready ->
     tank_red    : 'img/textures/custom/tank_red.png'
     tank_rogue  : 'img/textures/custom/tank_rogue.png'
     tank_white  : 'img/textures/custom/tank_white.png'
+    blue_bolt   : 'img/textures/bz/blue_bolt.png'
+    green_bolt  : 'img/textures/bz/green_bolt.png'
+    purple_bolt : 'img/textures/bz/purple_bolt.png'
+    rabbit_bolt : 'img/textures/bz/rabbit_bolt.png'
+    red_bolt    : 'img/textures/bz/red_bolt.png'
+    rogue_bolt  : 'img/textures/bz/rogue_bolt.png'
     grass       : 'img/textures/other/grass.png'
 
   assetManager = new pulse.AssetManager
