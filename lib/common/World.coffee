@@ -92,6 +92,6 @@ class World
         size     = null
         rotation = 0
 
-    return mapObjects
+    return [mapObjects, worldSize]
 
 module.exports = World

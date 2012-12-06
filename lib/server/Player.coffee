@@ -15,6 +15,14 @@ class Player extends CommonPlayer
     super elapsedMS
 
   spawn: (position, rotation) ->
+    random = (m, n) ->
+      Math.floor(Math.random() * (n-m+1)) + m
+
+    position ?= [
+      random(-@world.mapSize / 2, @world.mapSize / 2)
+      random(-@world.mapSize / 2, @world.mapSize / 2)
+    ]
+
     super position, rotation
 
     # tell our client that they're spawning
@@ -56,11 +64,24 @@ class Player extends CommonPlayer
       console.error "received malformed player died, bogus #{playerDiedData.shotSlot} shot slot", playerDiedData
       return
 
+    killer = @world.players[playerDiedData.killer]
+
+    # update models
+    @die()
+    killer.kill()
+
     # broadcast player death to everyone else
     @socket.broadcast.emit 'player died', Player.MessagePlayerDied(@, playerDiedData)
 
+    # update scores of both killer and killee
+    @socket.emit 'update score', Player.MessageUpdateScore(@)
+    @socket.broadcast.emit 'update score', Player.MessageUpdateScore(@)
+
+    @socket.emit 'update score', Player.MessageUpdateScore(killer)
+    @socket.broadcast.emit 'update score', Player.MessageUpdateScore(killer)
+
     # spawn player
-    @spawn([0,0], 0)
+    @spawn(null, 0)
 
   handleNewShot: (newShotData) =>
     if not newShotData.position instanceof Array or newShotData.position.length isnt 2

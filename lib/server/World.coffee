@@ -22,7 +22,7 @@ class World
     # do an empty map if no world file
     @map = {}
     if fs.existsSync(@server.argv.world)
-      @map = CommonWorld.ParseMap(fs.readFileSync(@server.argv.world, 'ascii'))
+      [@map, @mapSize] = CommonWorld.ParseMap(fs.readFileSync(@server.argv.world, 'ascii'))
 
     @io.sockets.on 'connection', @handleNewConnection
 
@@ -129,7 +129,7 @@ class World
 
       # immediate spawn this player at 0,0 with 0 rotation
       # TODO should be random, have a timer, respect state, etc
-      @players[socket.id].spawn([0,0], 0)
+      player.spawn([0,0], 0)
 
     socket.once 'get state', =>
       return unless @players[socket.id]?
@@ -137,7 +137,7 @@ class World
       # TODO: Give this new player state. Includes the map, variables, and all other players.
 
       # give the map to the player
-      socket.emit 'map', @map
+      socket.emit 'map', @map, @mapSize
 
       # tell this new player about all existing players
       for slot, player of @players

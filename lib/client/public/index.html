@@ -408,16 +408,22 @@
 	#hud {
 		text-align: left;
 		z-index: 1000;
+		color: #fff;
+		font: 24px "Courier New", monospace;
+		font-weight: bold;
+		text-shadow: 1px 1px 2px #000;
 	}
 
 	#playerScore {
 		position: absolute;
 		left: 10px;
 		top: 10px;
-		color: #fff;
-		font: 1.5em "Courier New", monospace;
-		font-weight: bold;
-		text-shadow: 1px 1px 2px #000;
+	}
+
+	#position {
+		position: absolute;
+		left: 10px;
+		top: 44px;
 	}
 
 	/* classes to be used from javascript */
@@ -493,6 +499,7 @@
 	<div id="gameWindow" style="display:none;">
 		<div id="hud">
 			<div id="playerScore"></div>
+			<div id="position"></div>
 		</div>
 	</div>
 </body>

@@ -14,12 +14,6 @@ class LocalPlayer extends Player
 
     @insideMapObject = false
 
-    @model.on 'killed', @updateScore
-    @model.on 'died', @updateScore
-
-  updateScore: =>
-    $('#hud #playerScore').text("#{@model.callsign}: #{@model.score}")
-
   handleKeyDown: (e) =>
     return unless @model.state is 'alive'
 
@@ -139,6 +133,9 @@ class LocalPlayer extends Player
             break
 
         break if hit
+
+    $('#hud #playerScore').text("#{@model.callsign}: #{@model.score}")
+    $('#hud #position').text("#{Math.round(@model.position[0])}, #{Math.round(@model.position[1])}")
 
     @world.camera.lookAt(@position) if @world.camera?
 

@@ -39,6 +39,8 @@ class Player extends DynamicSprite
     @visible = true
 
   handleScoreUpdate: (updateScoreData) =>
+    return unless updateScoreData.slot is @model.slot
+
     @model.wins   = updateScoreData.wins
     @model.losses = updateScoreData.losses
 
@@ -80,7 +82,7 @@ class Player extends DynamicSprite
       i++
 
   die: (killer, shot) ->
-    # tell the model we've died, return if the model won't die
+    # tell the model we've died
     @model.die(killer.model, shot.model)
 
     # give the killer a kill
