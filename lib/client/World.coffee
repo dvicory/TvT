@@ -84,6 +84,7 @@ class World extends pulse.Sprite
 
     @worldLayer.removeNode @players[removePlayerData.slot]
     @players[removePlayerData.slot] = null
+    delete @players[removePlayerData.slot]
 
   update: (elapsedMS) ->
     # TODO move this to setupCallback
