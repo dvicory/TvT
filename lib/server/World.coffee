@@ -72,7 +72,8 @@ class World
     socket.once 'disconnect', (reason) =>
       if not @players[socket.id]?
         console.error "can not remove player: player with slot #{socket.id} does not exist"
-        socket.disconnect 'can not remove you: you do not exist on the server'
+        socket.emit 'error', 'can not remove you, you do not exist on the server'
+        socket.disconnect()
         return
 
       # tell everyone this player has disconnected
@@ -84,8 +85,36 @@ class World
       delete @players[socket.id]
 
     socket.once 'join', (joinData) =>
-      # create the representative player object
       # TODO sanitize the incoming information, check for duplicate callsign, etc
+
+      teams = ['red', 'green', 'purple', 'blue']
+
+      # if random team, choose one
+      if joinData.team is 'random'
+        joinData.team = teams[Math.floor(Math.random() * teams.length)]
+
+      # got an invalid team
+      if teams.indexOf(joinData.team) is -1
+        socket.removeAllListeners()
+
+        console.error "player #{socket.id} tried to join invalid team #{joinData.team}"
+        socket.emit 'error', "you tried to join with invalid team #{joinData.team}"
+        socket.disconnect()
+
+        return
+
+      # check for duplicate callsign
+      for player in @players
+        if joinData.callsign is player.callsign
+          socket.removeAllListeners()
+
+          console.error "player #{socket.id} tried to join with callsign #{joinData.callsign} which matches player #{player.slot}"
+          socket.emit 'error', 'you tried to join with the same callsign as someone else'
+          socket.disconnect()
+
+          return
+
+      # create the representative player object
       player = new Player @, socket, socket.id, joinData.team, joinData.callsign, joinData.tag
 
       # use the socket id to store our player by
