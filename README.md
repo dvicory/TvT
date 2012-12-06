@@ -23,6 +23,8 @@ Once you've gotten Node.js and npm, installing TvT's other dependencies becomes 
     git clone git://github.com/dvicory/TvT.git
     cd TvT
     git submodule init
+    git submodule update
+    npm install -g coffee-script browserify
     npm install .
 
 `npm install .` will take a look at `package.json` and go ahead and grab everything you need to build TvT and run a TvT server.
