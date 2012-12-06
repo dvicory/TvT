@@ -18,16 +18,10 @@ class Player extends CommonPlayer
     super position, rotation
 
     # tell our client that they're spawning
-    @socket.emit 'self spawn', Player.MessageSpawnPlayer(@)
+    @socket.emit 'spawn player', Player.MessageSpawnPlayer(@)
 
     # tell everyone else that we spawned
-    @socket.broadcast.emit 'spawn', Player.MessageSpawnPlayer(@)
-
-  die: (killerData) =>
-    throw new Error('not yet implemented')
-
-  kill: (killee) ->
-    throw new Error('not yet implemented')
+    @socket.broadcast.emit 'spawn player', Player.MessageSpawnPlayer(@)
 
   handlePlayerUpdate: (updateData) =>
     if not updateData.position instanceof Array or updateData.position.length isnt 2
@@ -64,6 +58,9 @@ class Player extends CommonPlayer
 
     # broadcast player death to everyone else
     @socket.broadcast.emit 'player died', Player.MessagePlayerDied(@, playerDiedData)
+
+    # spawn player
+    @spawn([0,0], 0)
 
   handleNewShot: (newShotData) =>
     if not newShotData.position instanceof Array or newShotData.position.length isnt 2

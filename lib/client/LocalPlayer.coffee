@@ -15,6 +15,8 @@ class LocalPlayer extends Player
     @insideMapObject = false
 
   handleKeyDown: (e) =>
+    return unless @model.state is 'alive'
+
     lastVelocityFactor = @model.velocityFactor
     lastAngularVelocityFactor = @model.angularVelocityFactor
 
@@ -46,6 +48,8 @@ class LocalPlayer extends Player
     return
 
   handleKeyUp: (e) =>
+    return unless @model.state is 'alive'
+
     lastVelocityFactor = @model.velocityFactor
     lastAngularVelocityFactor = @model.angularVelocityFactor
 
@@ -78,54 +82,57 @@ class LocalPlayer extends Player
 
     # being inside a map object slows you down
     # TODO make this configurable
-    @insideMapObject = false
-    for mapObject in @world.mapObjects
-      if mapObject.inCurrentBounds(@position.x, @position.y)
-        # we're inside a map object, so we can break out now
-        @insideMapObject = true
-        break
-
-    # if we're inside one, we need to slow ourselves down accordingly
-    if @insideMapObject
-      @model.velocityFactor =  0.5        if @model.velocityFactor is  1
-      @model.velocityFactor = -0.5        if @model.velocityFactor is -1
-      @model.angularVelocityFactor = -0.5 if @model.angularVelocityFactor is -1
-      @model.angularVelocityFactor =  0.5 if @model.angularVelocityFactor is  1
-    # else if we're slowed down we should speed ourselves back up
-    else
-      @model.velocityFactor =  1        if @model.velocityFactor is  0.5
-      @model.velocityFactor = -1        if @model.velocityFactor is -0.5
-      @model.angularVelocityFactor = -1 if @model.angularVelocityFactor is -0.5
-      @model.angularVelocityFactor =  1 if @model.angularVelocityFactor is  0.5
-
-    lastVelocityFactor        = @lastUpdateDetails.velocityFactor
-    lastAngularVelocityFactor = @lastUpdateDetails.angularVelocityFactor
-
-    # has our velocity factors changed?
-    if lastVelocityFactor isnt @model.velocityFactor
-      sendVelocityFactor = true
-    if lastAngularVelocityFactor isnt @model.angularVelocityFactor
-      sendAngularVelocityFactor = true
-
-    # if so, we should immediately send an update
-    if sendVelocityFactor or sendAngularVelocityFactor
-      @sendPlayerUpdate(sendVelocityFactor, sendAngularVelocityFactor)
-
-    # we'll send an update no later than every 50ms
-    if (@lastUpdate + 50) <= Date.now()
-      @sendPlayerUpdate(true, true)
-
-    # see if anyone hit us
-    for slot, player of @world.players
-      hit = false
-
-      for shot in player.shots
-        if @inCurrentBounds(shot.position.x, shot.position.y)
-          @die(shot.player, shot)
-          hit = true
+    if @model.state is 'alive'
+      @insideMapObject = false
+      for mapObject in @world.mapObjects
+        if mapObject.inCurrentBounds(@position.x, @position.y)
+          # we're inside a map object, so we can break out now
+          @insideMapObject = true
           break
 
-      break if hit
+      # if we're inside one, we need to slow ourselves down accordingly
+      if @insideMapObject
+        @model.velocityFactor =  0.5        if @model.velocityFactor is  1
+        @model.velocityFactor = -0.5        if @model.velocityFactor is -1
+        @model.angularVelocityFactor = -0.5 if @model.angularVelocityFactor is -1
+        @model.angularVelocityFactor =  0.5 if @model.angularVelocityFactor is  1
+      # else if we're slowed down we should speed ourselves back up
+      else
+        @model.velocityFactor =  1        if @model.velocityFactor is  0.5
+        @model.velocityFactor = -1        if @model.velocityFactor is -0.5
+        @model.angularVelocityFactor = -1 if @model.angularVelocityFactor is -0.5
+        @model.angularVelocityFactor =  1 if @model.angularVelocityFactor is  0.5
+
+      lastVelocityFactor        = @lastUpdateDetails.velocityFactor
+      lastAngularVelocityFactor = @lastUpdateDetails.angularVelocityFactor
+
+      # has our velocity factors changed?
+      if lastVelocityFactor isnt @model.velocityFactor
+        sendVelocityFactor = true
+      if lastAngularVelocityFactor isnt @model.angularVelocityFactor
+        sendAngularVelocityFactor = true
+
+      # if so, we should immediately send an update
+      if sendVelocityFactor or sendAngularVelocityFactor
+        @sendPlayerUpdate(sendVelocityFactor, sendAngularVelocityFactor)
+
+      # we'll send an update no later than every 50ms
+      if (@lastUpdate + 50) <= Date.now()
+        @sendPlayerUpdate(true, true)
+
+      # see if anyone hit us
+      for slot, player of @world.players
+        continue if @model.team is player.model.team
+
+        hit = false
+
+        for shot in player.shots
+          if @inCurrentBounds(shot.position.x, shot.position.y)
+            @die(shot.player, shot)
+            hit = true
+            break
+
+        break if hit
 
     $('#hud #playerScore').text("#{@model.callsign}: #{@model.score}")
 

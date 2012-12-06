@@ -22,13 +22,20 @@ class Player extends DynamicSprite
     @shots = []
 
     @world.socket.on 'remove player', @handleRemovePlayer
+    @world.socket.on 'spawn player', @handleSpawnPlayer
     @world.socket.on 'update score', @handleScoreUpdate
 
   handleRemovePlayer: (removePlayerData) =>
     return unless removePlayerData.slot is @model.slot
 
     @world.socket.removeListener 'remove player', @handleRemovePlayer
+    @world.socket.removeListener 'spawn player', @handleSpawnPlayer
     @world.socket.removeListener 'update score', @handleScoreUpdate
+
+  handleSpawnPlayer: (spawnPlayerData) =>
+    return unless spawnPlayerData.slot is @model.slot    
+
+    @model.spawn(spawnPlayerData.position, spawnPlayerData.rotation)
 
   handleScoreUpdate: (updateScoreData) =>
     @model.wins   = updateScoreData.wins
@@ -72,8 +79,19 @@ class Player extends DynamicSprite
       i++
 
   die: (killer, shot) ->
+    # tell the model we've died, return if the model won't die
+    return if not @model.die(killer.model, shot.model)
+
     # end the killer's shot
     killer.endShot(shot)
+
+    # we are no longer visible
+    @visible = false
+
+  draw: (ctx) ->
+    return unless @model.state is 'alive'
+
+    super ctx
 
   @MessageUpdatePlayer: (player, includeVelocity, includeAngularVelocity) ->
     includeVelocity        ?= true

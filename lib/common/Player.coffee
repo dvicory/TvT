@@ -13,9 +13,10 @@ class Player extends DynamicWorldObject
       enumerable: false
       value: @wins - @losses
 
-    Object.defineProperty @, '_state',
+    Object.defineProperty @, 'state',
       enumerable: false
-      value: 'idle'
+      writable: true
+      value: 'alive'
 
   update: (elapsedMS) ->
     super elapsedMS
@@ -24,14 +25,14 @@ class Player extends DynamicWorldObject
     @position = position
     @rotation = rotation
 
-    @_state = 'alive'
+    @state = 'alive'
 
     @emit 'spawned', @
 
   die: (killer, shot) ->
-    return false unless @_state is 'alive'
+    return false unless @state is 'alive'
 
-    @_state = 'dead'
+    @state = 'dead'
 
     @emit 'died', @, killer, shot
 
@@ -40,7 +41,7 @@ class Player extends DynamicWorldObject
     @emit 'updated.score', @
 
   kill: (killee, shot) ->
-    return false unless @_state is 'alive'
+    return false unless @state is 'alive'
 
     @emit 'killed', @, killee, shot
 
