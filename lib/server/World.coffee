@@ -104,8 +104,8 @@ class World
         return
 
       # check for duplicate callsign
-      for player in @players
-        if joinData.callsign is player.callsign
+      for slot, player of @players
+        if joinData.callsign.trim() is player.callsign
           socket.removeAllListeners()
 
           console.error "player #{socket.id} tried to join with callsign #{joinData.callsign} which matches player #{player.slot}"
@@ -114,8 +114,18 @@ class World
 
           return
 
+      # make sure it meets min length
+      if joinData.callsign.trim().length < 2
+          socket.removeAllListeners()
+
+          console.error "player #{socket.id} tried to join with callsign #{joinData.callsign} which is too short"
+          socket.emit 'error', 'you tried to join with a too short callsign'
+          socket.disconnect()
+
+          return
+
       # create the representative player object
-      player = new Player @, socket, socket.id, joinData.team, joinData.callsign, joinData.tag
+      player = new Player @, socket, socket.id, joinData.team, joinData.callsign.trim(), joinData.tag
 
       # use the socket id to store our player by
       @players[socket.id] = player
