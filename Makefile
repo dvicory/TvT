@@ -10,7 +10,8 @@ COMMON_LIB = \
 	lib/common/Rectangle.js \
 	lib/common/RotatedRectangle.js \
 	lib/common/World.js \
-	lib/common/Player.js
+	lib/common/Player.js \
+	lib/common/Shot.js
 
 SERVER_LIB = \
 	lib/server/Protocol.js \
@@ -29,6 +30,7 @@ CLIENT_LIB = \
 	lib/client/Player.js \
 	lib/client/LocalPlayer.js \
 	lib/client/RemotePlayer.js \
+	lib/client/Shot.js \
 	lib/client/Client.js
 
 all: common server client

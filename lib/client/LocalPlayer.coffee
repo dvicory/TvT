@@ -1,8 +1,12 @@
 Player = require('./Player')
+Shot = require('./Shot')
 
 class LocalPlayer extends Player
   constructor: (@world, slot, team, callsign, tag, args) ->
     super @world, slot, team, callsign, tag, args
+
+    @shots = []
+    @maxShots = 5
 
     @events.on 'keydown', @handleKeyDown
     @events.on 'keyup', @handleKeyUp
@@ -37,6 +41,10 @@ class LocalPlayer extends Player
     if ['W', 'A', 'S', 'D'].indexOf(e.key) isnt -1
       @sendPlayerUpdate(lastVelocityFactor isnt @model.velocityFactor, lastAngularVelocityFactor isnt @model.angularVelocityFactor)
 
+    # player pressed enter, let's shoot
+    if e.keyCode is 13
+      @shoot() unless @insideMapObject
+
     return
 
   handleKeyUp: (e) =>
@@ -54,6 +62,32 @@ class LocalPlayer extends Player
       @sendPlayerUpdate(lastVelocityFactor isnt @model.velocityFactor, lastAngularVelocityFactor isnt @model.angularVelocityFactor)
 
     return
+
+  shoot: ->
+    return if @shots.length >= @maxShots
+
+    shotModel = @model.shoot()
+
+    shot = new Shot(@world, @, shotModel)
+
+    @shots.push(shot)
+
+    @world.worldLayer.addNode shot
+
+  endShot: (endedShot) ->
+    i = 0
+    for shot in @shots
+      if shot is endedShot
+        @model.endShot(@shots[i].model)
+
+        @shots[i] = null
+        @shots.splice(i, 1)
+
+        @world.worldLayer.removeNode(endedShot)
+
+        break
+
+      i++
 
   update: (elapsedMS) ->
     super elapsedMS
@@ -96,6 +130,12 @@ class LocalPlayer extends Player
     # we'll send an update no later than every 50ms
     if (@lastUpdate + 50) <= Date.now()
       @sendPlayerUpdate(true, true)
+
+    # see if any of our shots ended
+    i = @shots.length
+    while (i--)
+      if @shots[i].model.state is 'ended'
+        @endShot(@shots[i])
 
     @world.camera.lookAt(@position) if @world.camera?
 

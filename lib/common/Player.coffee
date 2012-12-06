@@ -1,4 +1,5 @@
 DynamicWorldObject = require('./DynamicWorldObject')
+Shot = require('./Shot')
 
 class Player extends DynamicWorldObject
   constructor: (@slot, @team, @callsign, @tag, @wins, @losses) ->
@@ -6,6 +7,7 @@ class Player extends DynamicWorldObject
 
     @wins   ?= 0
     @losses ?= 0
+    @shots   = []
 
     Object.defineProperty @, 'score',
       enumerable: false
@@ -26,23 +28,43 @@ class Player extends DynamicWorldObject
 
     @emit 'spawned', @
 
-  die: (killer) ->
+  die: (killer, shot) ->
     return false unless @_state is 'alive'
+
     @_state = 'dead'
 
-    @emit 'died', @, killer
+    @emit 'died', @, killer, shot
 
     # update losses
     @losses++
     @emit 'updated.score', @
 
-  kill: (killee) ->
+  kill: (killee, shot) ->
     return false unless @_state is 'alive'
 
-    @emit 'killed', @, killee
+    @emit 'killed', @, killee, shot
 
     # update wins
     @wins++
     @emit 'updated.score', @
+
+  shoot: ->
+    shot = new Shot(@shots.length, @)
+
+    @shots.push(shot)
+
+    return shot
+
+  endShot: (endedShot) ->
+    i = 0
+
+    for shot in @shots
+      if shot is endedShot
+        @shots[i] = null
+        @shots.splice(i, 1)
+
+        break
+
+      i++
 
 module.exports = Player
