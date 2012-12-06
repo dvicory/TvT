@@ -17,9 +17,9 @@ class LocalPlayer extends Player
     lastAngularVelocityFactor = @model.angularVelocityFactor
 
     if e.key is 'W' # move forwards
-      @model.velocityFactor = -1
-    if e.key is 'S' # move backwards
       @model.velocityFactor = 1
+    if e.key is 'S' # move backwards
+      @model.velocityFactor = -1
     if e.key is 'A' # rotate left
       @model.angularVelocityFactor = -1
     if e.key is 'D' # rotate right
@@ -28,8 +28,8 @@ class LocalPlayer extends Player
     # being inside a map object slows you down
     # TODO make this configurable
     if @insideMapObject
-      @model.velocityFactor = -0.5        if e.key is 'W'
-      @model.velocityFactor =  0.5        if e.key is 'S'
+      @model.velocityFactor =  0.5        if e.key is 'W'
+      @model.velocityFactor = -0.5        if e.key is 'S'
       @model.angularVelocityFactor = -0.5 if e.key is 'A'
       @model.angularVelocityFactor =  0.5 if e.key is 'D'
 
@@ -67,14 +67,14 @@ class LocalPlayer extends Player
 
     # if we're inside one, we need to slow ourselves down accordingly
     if @insideMapObject
-      @model.velocityFactor = -0.5        if @model.velocityFactor is -1
       @model.velocityFactor =  0.5        if @model.velocityFactor is  1
+      @model.velocityFactor = -0.5        if @model.velocityFactor is -1
       @model.angularVelocityFactor = -0.5 if @model.angularVelocityFactor is -1
       @model.angularVelocityFactor =  0.5 if @model.angularVelocityFactor is  1
     # else if we're slowed down we should speed ourselves back up
     else
-      @model.velocityFactor = -1        if @model.velocityFactor is -0.5
       @model.velocityFactor =  1        if @model.velocityFactor is  0.5
+      @model.velocityFactor = -1        if @model.velocityFactor is -0.5
       @model.angularVelocityFactor = -1 if @model.angularVelocityFactor is -0.5
       @model.angularVelocityFactor =  1 if @model.angularVelocityFactor is  0.5
 
