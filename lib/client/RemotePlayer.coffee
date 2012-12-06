@@ -6,6 +6,7 @@ class RemotePlayer extends Player
 
     @world.socket.on 'update player', @handleUpdatePlayer
     @world.socket.on 'remove player', @handleRemovePlayer
+    @world.socket.on 'new shot', @handleNewShot
 
   handleUpdatePlayer: (updatePlayerData) =>
     return unless updatePlayerData.slot is @model.slot
@@ -18,5 +19,11 @@ class RemotePlayer extends Player
 
     @world.socket.removeListener 'update player', @handleUpdatePlayer
     @world.socket.removeListener 'remove player', @handleRemovePlayer
+
+  handleNewShot: (newShotData) =>
+    return unless newShotData.slot is @model.slot
+    return if @shots.indexOf(newShotData.slot) isnt -1
+
+    @shoot(newShotData.shotSlot, newShotData.position, newShotData.rotation)
 
 module.exports = RemotePlayer

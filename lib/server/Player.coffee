@@ -8,6 +8,7 @@ class Player extends CommonPlayer
     super slot, team, callsign, tag
 
     @socket.on 'update player', @handlePlayerUpdate
+    @socket.on 'new shot', @handleNewShot
 
   update: (elapsedMS) ->
     super elapsedMS
@@ -51,6 +52,18 @@ class Player extends CommonPlayer
     # broadcast player update to everyone else
     @socket.volatile.broadcast.emit 'update player', Player.MessageUpdatePlayer(@, updateData.velocityFactor?, updateData.angularVelocityFactor?)
 
+  handleNewShot: (newShotData) =>
+    if not newShotData.position instanceof Array or newShotData.position.length isnt 2
+      console.error 'received malformed new shot, bogus position vector', newShotData
+      return
+
+    if typeof newShotData.rotation isnt 'number'
+      console.error "received malformed new shot, bogus #{newShotData.rotation} rotation", updateData
+      return
+
+    # broadcast new shot to everyone else
+    @socket.broadcast.emit 'new shot', Player.MessageNewShot(@, newShotData)
+
   @MessageNewPlayer: (player) ->
     slot     : player.slot
     callsign : player.callsign
@@ -79,6 +92,12 @@ class Player extends CommonPlayer
     slot     : player.slot
     position : player.position
     rotation : player.rotation
+
+  @MessageNewShot: (player, shot) ->
+    slot     : player.slot
+    shotSlot : shot.slot
+    position : shot.initialPosition
+    rotation : shot.rotation
 
   @MessageUpdateScore: (player) ->
     slot   : player.slot

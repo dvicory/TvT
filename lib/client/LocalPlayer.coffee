@@ -5,12 +5,10 @@ class LocalPlayer extends Player
   constructor: (@world, slot, team, callsign, tag, args) ->
     super @world, slot, team, callsign, tag, args
 
-    @shots = []
-    @maxShots = 5
-
     @events.on 'keydown', @handleKeyDown
     @events.on 'keyup', @handleKeyUp
 
+    @maxShots = 5
     @lastUpdate = Date.now()
     @lastUpdateDetails = {}
 
@@ -66,28 +64,12 @@ class LocalPlayer extends Player
   shoot: ->
     return if @shots.length >= @maxShots
 
-    shotModel = @model.shoot()
+    shot = super
 
-    shot = new Shot(@world, @, shotModel)
-
-    @shots.push(shot)
-
-    @world.worldLayer.addNode shot
+    @world.socket.emit 'new shot', Player.MessageNewShot(shot.model)
 
   endShot: (endedShot) ->
-    i = 0
-    for shot in @shots
-      if shot is endedShot
-        @model.endShot(@shots[i].model)
-
-        @shots[i] = null
-        @shots.splice(i, 1)
-
-        @world.worldLayer.removeNode(endedShot)
-
-        break
-
-      i++
+    super endedShot
 
   update: (elapsedMS) ->
     super elapsedMS
@@ -130,12 +112,6 @@ class LocalPlayer extends Player
     # we'll send an update no later than every 50ms
     if (@lastUpdate + 50) <= Date.now()
       @sendPlayerUpdate(true, true)
-
-    # see if any of our shots ended
-    i = @shots.length
-    while (i--)
-      if @shots[i].model.state is 'ended'
-        @endShot(@shots[i])
 
     @world.camera.lookAt(@position) if @world.camera?
 

@@ -48,8 +48,10 @@ class Player extends DynamicWorldObject
     @wins++
     @emit 'updated.score', @
 
-  shoot: ->
-    shot = new Shot(@shots.length, @)
+  shoot: (slot, initialPosition, rotation) ->
+    slot ?= @shots.length
+
+    shot = new Shot(slot, @, initialPosition, rotation)
 
     @shots.push(shot)
 

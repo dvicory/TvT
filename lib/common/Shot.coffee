@@ -4,7 +4,7 @@ glmatrix.glMatrixArrayType = glmatrix.MatrixArray = glmatrix.setMatrixArrayType(
 DynamicWorldObject = require('./DynamicWorldObject')
 
 class Shot extends DynamicWorldObject
-  constructor: (@slot, @player) ->
+  constructor: (@slot, @player, initialPosition, rotation) ->
     super 'Shot'
 
     Object.defineProperty @, 'state',
@@ -20,8 +20,14 @@ class Shot extends DynamicWorldObject
 
     glmatrix.vec2.add(@player.position, @initialPosition, @initialPosition)
 
-    @position = glmatrix.vec2.create(@initialPosition)
+    @initialPosition ?= initialPosition
+
+    # and rotation
     @rotation = @player.rotation
+    @rotation ?= rotation
+
+    # setup
+    @position = glmatrix.vec2.create(@initialPosition)
     @size = [3,3]
 
     # set maximum range to 100 units
