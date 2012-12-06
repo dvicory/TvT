@@ -5,7 +5,89 @@ World = require('./World')
 
 pulse.EventManager = EventEmitter
 
+startTvT = (assetManager, joinData) ->
+  engine = new pulse.Engine
+    gameWindow: 'gameWindow'
+    size:
+      width: $(window).width()
+      height: $(window).height()
+
+  scene = new pulse.Scene name: 'Main'
+  layer = new pulse.Layer
+
+  layer.anchor =
+    x: 0
+    y: 0
+
+  scene.addLayer layer
+  engine.scenes.addScene scene
+
+  engine.scenes.activateScene scene
+
+  # window resizing support
+  $(window).resize ->
+    engine.size =
+      width: $(window).width()
+      height: $(window).height()
+
+    $('#gameWindow > div').width $(window).width()
+    $('#gameWindow > div').height $(window).height()
+
+    $('#gameWindow canvas').attr 'width', $(window).width()
+    $('#gameWindow canvas').attr 'height', $(window).height()
+
+    for own key, scene of engine.scenes.scenes
+      scene._private.defaultSize =
+        width: $(window).width()
+        height: $(window).height()
+      for own key, layer of scene.layers
+        layer.size =
+          width: $(window).width()
+          height: $(window).height()
+
+  count = 0
+  engine.go 20
+
+  # connect to server
+  socket = io.connect "#{window.location.protocol}//#{window.location.host}", reconnect : false
+
+  # we connected
+  socket.on 'connect', ->
+    socket.once 'protocol', (serverVersion) =>
+      # TODO we should kill ourselves better if this fails
+      if serverVersion isnt Protocol.VERSION
+        throw new TypeError("Protocol version mismatch (server: #{serverVersion}, client: #{Protocol.VERSION}).")
+
+    # pass along joinData
+    joinData.tag ?= ''
+
+    # instantiate world
+    window.tvt = world = new World name: 'World', socket: socket, joinData: joinData, assetManager: assetManager
+    layer.addNode world
+
+  # there was an error
+  socket.on 'error', (err) ->
+    # TODO handle errors better
+    if world?
+      layer.removeNode world
+      world = null
+
+    console.error err
+
+  # we disconnected
+  socket.on 'disconnect', ->
+    # TODO handle disconnections better
+    if world?
+      layer.removeNode world
+      world = null
+
+    console.error 'disconnected from tvt server'
+
 pulse.ready ->
+  # hide all menus
+  $('#menus').hide()
+  $('#menus > div').hide()
+
   manifest =
     tank_blue   : 'img/textures/custom/tank_blue.png'
     tank_green  : 'img/textures/custom/tank_green.png'
@@ -23,85 +105,33 @@ pulse.ready ->
     assetManager.addAsset(new pulse.Texture(name: name, filename: filename))
 
   assetManager.events.on 'complete', ->
-    engine = new pulse.Engine
-      gameWindow: 'gameWindow'
-      size:
-        width: $(window).width()
-        height: $(window).height()
+    # we want to get the menu started up
 
-    scene = new pulse.Scene name: 'Main'
-    layer = new pulse.Layer
+    # hide loading container
+    $('.loadingContainer').hide()
 
-    layer.anchor =
-      x: 0
-      y: 0
+    # now align it to the top - loading is centered
+    $('#wrapper').addClass 'alignStart'
 
-    scene.addLayer layer
-    engine.scenes.addScene scene
+    # and unhide the menus
+    $('#menus').show()
+    $('#mainMenu').show()
 
-    engine.scenes.activateScene scene
+    # setup event handlers on main menu
+    $('#mainMenu li').click ->
+      # hide all menus
+      $('#menus > div').hide()
 
-    # window resizing support
-    $(window).resize ->
-      engine.size =
-        width: $(window).width()
-        height: $(window).height()
+      # unhide specific one we want
+      $("#{$(this).attr('data-to')}").show()
 
-      $('#gameWindow > div').width $(window).width()
-      $('#gameWindow > div').height $(window).height()
+    $('#joinMenu form').submit ->
+      # start the game
+      $('#gameWindow').show()
 
-      $('#gameWindow canvas').attr 'width', $(window).width()
-      $('#gameWindow canvas').attr 'height', $(window).height()
+      joinData = $(this).serializeJSON()
 
-      for own key, scene of engine.scenes.scenes
-        scene._private.defaultSize =
-          width: $(window).width()
-          height: $(window).height()
-        for own key, layer of scene.layers
-          layer.size =
-            width: $(window).width()
-            height: $(window).height()
+      startTvT(assetManager, joinData)
 
-    count = 0
-    engine.go 20
-
-    # connect to server
-    socket = io.connect "#{window.location.protocol}//#{window.location.host}"
-
-    # there was an error
-    socket.on 'error', (err) ->
-      # TODO handle errors better
-      if world?
-        layer.removeNode world
-        world = null
-
-      console.error err
-
-    # we connected
-    socket.on 'connect', ->
-      socket.once 'protocol', (serverVersion) =>
-        # TODO we should kill ourselves better if this fails
-        if serverVersion isnt Protocol.VERSION
-          throw new TypeError("Protocol version mismatch (server: #{serverVersion}, client: #{Protocol.VERSION}).")
-
-      # pass along joinData
-      joinData =
-        callsign: "random callsign #{Math.floor(Math.random() * 101)}"
-        team: 'red'
-        tag: 'some tag'
-
-      # instantiate world
-      world = new World name: 'World', socket: socket, joinData: joinData, assetManager: assetManager
-      layer.addNode world
-
-      # fade in the game window
-      $('#gameWindow').addClass('fadeIn').show()
-
-    # we disconnected
-    socket.on 'disconnect', ->
-      # TODO handle disconnections better
-      if world?
-        layer.removeNode world
-        world = null
-
-      return
+      # prevent default action
+      return false
