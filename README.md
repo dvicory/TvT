@@ -40,15 +40,16 @@ This will compile TvT's CoffeeScript into JavaScript and get the modules ready f
 ## Running
 To run the TvT server, execute the following:
 
-    bin/server.js -p 8080
+    bin/server.js -p 8080 -w maps/ducati.bzw
 
-This will run the TvT server on [localhost:8080](http://localhost:8080). Open that with Google Chrome and play!
+This will run the TvT server on [localhost:8080](http://localhost:8080) with the included Ducati map. Open that with Google Chrome and play!
 
 ## Controls
 Below is what the following buttons map to.
 
-    w: up
-    s: down
-    a: left
-    d: right
-    enter: shoot
+    W: up
+    S: down
+    A: left
+    D: right
+    Enter: shoot
+    P: print scores to console
